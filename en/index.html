@@ -89,12 +89,14 @@
     </header>
 
     <main id="top">
-      <section class="hero">
-        <div class="hero-media" role="img" aria-label="Business fleet imagery — fleet analysis, fleet optimization, and business vehicle management with AnaliseFrota."></div>
-        <div class="hero-scrim" aria-hidden="true"></div>
-        <div class="hero-noise" aria-hidden="true"></div>
-
-        <div class="container hero-grid">
+      <section class="section section--hero section--bleed" aria-label="Start">
+        <div class="section__bleed" aria-hidden="true">
+          <div class="hero-media" role="img" aria-label="Business fleet imagery — fleet analysis, fleet optimization, and business vehicle management with AnaliseFrota."></div>
+          <div class="hero-scrim"></div>
+          <div class="hero-noise"></div>
+        </div>
+        <div class="container">
+        <div class="hero-grid">
           <div class="hero-copy">
             <div class="eyebrow">Strategic analysis for businesses</div>
             <h1>Find out how much your company may be losing on fleet costs</h1>
@@ -126,250 +128,270 @@
             </div>
           </div>
         </div>
-      </section>
-
-      <section class="intro section-light">
-        <div class="container container-narrow intro-wrap">
-          <div class="section-kicker">Business diagnosis</div>
-          <h2>Optimize fleet costs without compromising efficiency and brand image.</h2>
-          <p>
-            Discover cost-saving opportunities and operational improvements for your company in minutes, with a serious, decision-oriented approach.
-          </p>
         </div>
       </section>
 
-      <section class="intro section-light simulator-benefits-section">
-        <div class="container container-narrow intro-wrap simulator-benefits-intro">
-          <h2>Why use this simulator?</h2>
-          <ul aria-label="Simulator benefits">
-            <li>Identify hidden costs that often go unnoticed</li>
-            <li>Compare buying vs leasing based on real cost</li>
-            <li>Support strategic decisions with concrete data</li>
-          </ul>
-        </div>
-      </section>
-
-      <section id="simulador" class="simulator-section">
+      <section class="section section--surface section--lead">
         <div class="container">
-          <div class="simulator-card">
-            <div class="simulator-main">
-              <div class="simulator-heading">
-                <div class="section-kicker">Indicative simulation</div>
-                <h2>Single-vehicle TCO simulation</h2>
+          <div class="section-lead-inner container-narrow text-center">
+            <p class="section-lead-text">
+              Find out how much you could save on your fleet using real market assumptions.
+            </p>
+            <a href="/en/reduce-fleet-costs.html" class="btn btn-primary btn-lead-cta">View the fleet cost reduction guide</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tint section--editorial">
+        <div class="container">
+          <div class="editorial-surface editorial-surface--bridge">
+            <div class="editorial-bridge-inner">
+              <div class="section-kicker text-center">Business diagnosis</div>
+              <h2 class="text-center editorial-title">Optimise fleet costs without compromising efficiency and brand image.</h2>
+              <div class="prose-editorial-lead">
                 <p>
-                  Enter your details for a consultative view of total cost for one vehicle over the selected period.
+                  Discover cost-saving opportunities and operational improvements for your company in minutes, with a serious, decision-oriented approach.
                 </p>
               </div>
+              <p class="editorial-support-line">
+                If you are using the simulator to prepare decisions, also read the guide on
+                <a href="/en/reduce-fleet-costs.html">reducing fleet costs</a> with a practical, results-driven approach.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-              <form class="simulator-form" id="tcoForm" novalidate>
-                <div class="form-grid form-grid-top">
-                  <div class="field">
-                    <label for="powertrainType">Powertrain type</label>
-                    <select id="powertrainType" name="powertrainType">
-                      <option value="" data-label-pt="Selecionar" data-label-en="Select">Select</option>
-                      <option value="combustion" data-label-pt="Combustão" data-label-en="Combustion">Combustion</option>
-                      <option value="hybrid" data-label-pt="Híbrido" data-label-en="Hybrid">Hybrid</option>
-                      <option value="electric" data-label-pt="Elétrico" data-label-en="Electric">Electric</option>
-                    </select>
+      <section class="section section--surface section--why-sim" aria-labelledby="why-sim-heading">
+        <div class="why-sim-frame">
+          <div class="why-card">
+            <h2 id="why-sim-heading" class="why-card-title">Why use this simulator?</h2>
+            <div class="why-grid" role="list" aria-label="Simulator benefits">
+              <div class="why-item" role="listitem">
+                <span class="why-number">1</span>
+                <p class="why-text">Hidden costs surfaced</p>
+              </div>
+              <div class="why-item" role="listitem">
+                <span class="why-number">2</span>
+                <p class="why-text">Real comparison across models</p>
+              </div>
+              <div class="why-item" role="listitem">
+                <span class="why-number">3</span>
+                <p class="why-text">Decisions grounded in concrete data</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="simulador" class="section section--tint section--simulator">
+        <div class="container">
+          <div class="simulator-shell">
+          <div class="simulator-card">
+            <div class="simulator-main">
+              <div class="simulator-intro-block">
+                <div class="simulator-intro-stack">
+                  <div class="simulator-heading simulator-heading--intro">
+                    <div class="section-kicker">Indicative simulation</div>
+                    <h2 class="simulator-intro-heading">Single-vehicle TCO simulation</h2>
+                    <p class="simulator-intro-lead">
+                      Enter your details for a consultative view of total cost for one vehicle over the selected period.
+                    </p>
                   </div>
-
-                  <div class="field">
-                    <label for="usageProfile">Usage profile</label>
-                    <select id="usageProfile" name="usageProfile">
-                      <option value="" data-label-pt="Selecionar" data-label-en="Select">Select</option>
-                      <option value="urbano" data-label-pt="Urbano" data-label-en="Urban">Urban</option>
-                      <option value="misto" data-label-pt="Misto" data-label-en="Mixed">Mixed</option>
-                      <option value="estrada" data-label-pt="Estrada" data-label-en="Highway">Highway</option>
-                    </select>
+                  <div class="simulator-intro-notes">
+                    <p class="simulator-form-hint simulator-form-hint--intro" data-lang="pt">Em Compra e Renting os campos adaptam‑se ao modelo escolhido. Na compra pode usar estimativas internas ou valores manuais para manutenção, pneus e impostos; no renting indique o que já está incluído na renda.</p>
+                    <p class="simulator-form-hint simulator-form-hint--intro" data-lang="en">Purchase and leasing show different fields. For purchase you can rely on internal estimates or enter annual maintenance, tyres, and taxes; for leasing, tick what is included in the monthly payment.</p>
                   </div>
+                </div>
+              </div>
 
-                  <div class="field">
-                    <label for="annualKm">Average annual mileage</label>
-                    <input
-                      id="annualKm"
-                      name="annualKm"
-                      type="number"
-                      inputmode="numeric"
-                      placeholder="E.g.: 25000"
-                      data-placeholder-pt="Ex: 25000"
-                      data-placeholder-en="E.g.: 25000"
-                      min="0"
-                    />
-                  </div>
+              <form class="simulator-form simulator-form--saas" id="tcoForm" novalidate>
 
-                  <div class="field">
-                    <label for="acquisitionModel">Acquisition model</label>
-                    <select id="acquisitionModel" name="acquisitionModel">
-                      <option value="purchase" data-label-pt="Compra" data-label-en="Purchase">Purchase</option>
-                      <option value="renting" data-label-pt="Renting" data-label-en="Leasing">Leasing</option>
-                    </select>
-                  </div>
+                <div class="simulator-form__group">
+                  <div class="form-grid form-grid--sim form-grid--sim-top">
+                    <div class="field">
+                      <label for="powertrainType">Powertrain type</label>
+                      <select id="powertrainType" name="powertrainType">
+                        <option value="" data-label-pt="Selecionar" data-label-en="Select">Select</option>
+                        <option value="combustion" data-label-pt="Combustão" data-label-en="Combustion">Combustion</option>
+                        <option value="hybrid" data-label-pt="Híbrido" data-label-en="Hybrid">Hybrid</option>
+                        <option value="electric" data-label-pt="Elétrico" data-label-en="Electric">Electric</option>
+                      </select>
+                    </div>
 
-                  <div class="field">
-                    <label for="analysisYears">Analysis period (years)</label>
-                    <input
-                      id="analysisYears"
-                      name="analysisYears"
-                      type="number"
-                      inputmode="numeric"
-                      min="1"
-                      placeholder="E.g.: 4"
-                      data-placeholder-pt="Ex: 4"
-                      data-placeholder-en="E.g.: 4"
-                    />
+                    <div class="field">
+                      <label for="usageProfile">Usage profile</label>
+                      <select id="usageProfile" name="usageProfile">
+                        <option value="" data-label-pt="Selecionar" data-label-en="Select">Select</option>
+                        <option value="urbano" data-label-pt="Urbano" data-label-en="Urban">Urban</option>
+                        <option value="misto" data-label-pt="Misto" data-label-en="Mixed">Mixed</option>
+                        <option value="estrada" data-label-pt="Estrada" data-label-en="Highway">Highway</option>
+                      </select>
+                    </div>
+
+                    <div class="field">
+                      <label for="annualKm">Average annual mileage</label>
+                      <input
+                        id="annualKm"
+                        name="annualKm"
+                        type="number"
+                        inputmode="numeric"
+                        placeholder="E.g.: 25000"
+                        data-placeholder-pt="Ex: 25000"
+                        data-placeholder-en="E.g.: 25000"
+                        min="0"
+                      />
+                    </div>
+
+                    <div class="field">
+                      <label for="analysisYears">Analysis period (years)</label>
+                      <input
+                        id="analysisYears"
+                        name="analysisYears"
+                        type="number"
+                        inputmode="numeric"
+                        min="1"
+                        placeholder="E.g.: 4"
+                        data-placeholder-pt="Ex: 4"
+                        data-placeholder-en="E.g.: 4"
+                      />
+                    </div>
+
+                    <div class="field field-span-2">
+                      <label for="acquisitionModel">Acquisition model</label>
+                      <select id="acquisitionModel" name="acquisitionModel">
+                        <option value="purchase" data-label-pt="Compra" data-label-en="Purchase">Purchase</option>
+                        <option value="renting" data-label-pt="Renting" data-label-en="Leasing">Leasing</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
 
-                <div class="fleet-groups">
-                  <article class="fleet-group">
-                    <div class="fleet-group-grid">
-                      <div class="field field-wide">
+                <div class="simulator-form__group">
+                  <div class="simulator-form__panel">
+                    <div class="form-grid form-grid--sim">
+                      <div class="field field-span-2">
                         <label for="consumptionValue">Consumption (L/100 km or kWh/100 km)</label>
                         <input id="consumptionValue" name="consumptionValue" type="number" min="0" step="0.01" placeholder="E.g.: 6.2" data-placeholder-pt="Ex: 6.2" data-placeholder-en="E.g.: 6.2" />
                       </div>
 
-                      <div class="field field-wide">
+                      <div class="field field-span-2">
                         <label for="energyPrice">Energy price (€/L or €/kWh)</label>
                         <input id="energyPrice" name="energyPrice" type="number" min="0" step="0.01" placeholder="E.g.: 1.75" data-placeholder-pt="Ex: 1.75" data-placeholder-en="E.g.: 1.75" />
                       </div>
+                    </div>
+                  </div>
+                </div>
 
-                      <div class="field purchase-field">
+                <div class="simulator-form__group simulator-form__group--mode purchase-only">
+                  <div class="simulator-form__panel simulator-form__panel--mode">
+                    <div class="form-grid form-grid--sim">
+                      <div class="field field-span-2">
                         <label for="purchasePrice">Vehicle purchase price (€)</label>
                         <input id="purchasePrice" name="purchasePrice" type="number" min="0" placeholder="E.g.: 32000" data-placeholder-pt="Ex: 32000" data-placeholder-en="E.g.: 32000" />
                       </div>
 
-                      <div class="field purchase-field">
-                        <label for="downPayment">Initial down payment (€)</label>
-                        <input id="downPayment" name="downPayment" type="number" min="0" value="0" />
+                      <div class="field">
+                        <label for="purchaseInitialPayment">Initial payment (€) <span class="label-optional">optional</span></label>
+                        <input id="purchaseInitialPayment" name="purchaseInitialPayment" type="number" min="0" value="" placeholder="—" data-placeholder-pt="—" data-placeholder-en="—" />
                       </div>
 
-                      <div class="field purchase-field">
-                        <label for="financingEnabled">Financing</label>
-                        <select id="financingEnabled" name="financingEnabled">
-                          <option value="no">No</option>
-                          <option value="yes">Yes</option>
-                        </select>
+                      <div class="field field-span-2 simulator-checkbox-field">
+                        <input type="checkbox" id="useInternalOpexEstimate" name="useInternalOpexEstimate" checked />
+                        <label for="useInternalOpexEstimate">Use internal estimates for maintenance, tyres, and taxes</label>
                       </div>
 
-                      <div class="field purchase-field financing-field is-hidden">
-                        <label for="annualInterestRate">Annual interest rate (%)</label>
-                        <input id="annualInterestRate" name="annualInterestRate" type="number" min="0" step="0.01" placeholder="E.g.: 6.5" data-placeholder-pt="Ex: 6.5" data-placeholder-en="E.g.: 6.5" />
-                      </div>
+                      <details class="simulator-advanced purchase-manual-opex field-span-2 is-hidden">
+                        <summary class="simulator-advanced-summary">Manual annual costs (€)</summary>
+                        <div class="form-grid form-grid--sim simulator-advanced-grid">
+                          <div class="field">
+                            <label for="manualMaintenanceAnnual">Annual maintenance</label>
+                            <input id="manualMaintenanceAnnual" name="manualMaintenanceAnnual" type="number" min="0" step="1" value="" />
+                          </div>
+                          <div class="field">
+                            <label for="manualTyresAnnual">Annual tyres</label>
+                            <input id="manualTyresAnnual" name="manualTyresAnnual" type="number" min="0" step="1" value="" />
+                          </div>
+                          <div class="field field-span-2">
+                            <label for="manualTaxesAnnual">Annual taxes and fees</label>
+                            <input id="manualTaxesAnnual" name="manualTaxesAnnual" type="number" min="0" step="1" value="" />
+                          </div>
+                        </div>
+                      </details>
 
-                      <div class="field purchase-field financing-field is-hidden">
-                        <label for="financingMonths">Financing term (months)</label>
-                        <input id="financingMonths" name="financingMonths" type="number" min="0" step="1" placeholder="E.g.: 60" data-placeholder-pt="Ex: 60" data-placeholder-en="E.g.: 60" />
+                      <div class="field field-span-2">
+                        <label for="annualInsurancePurchase">Annual insurance (€) <span class="label-optional">optional; internal estimate if blank</span></label>
+                        <input id="annualInsurancePurchase" name="annualInsurancePurchase" type="number" min="0" value="" placeholder="—" data-placeholder-pt="—" data-placeholder-en="—" />
                       </div>
+                    </div>
+                  </div>
+                </div>
 
-                      <div class="field purchase-field">
-                        <label for="residualValue">Residual value at end of period (€)</label>
-                        <input id="residualValue" name="residualValue" type="number" min="0" value="0" />
-                      </div>
-
-                      <div class="field renting-field is-hidden">
-                        <label for="monthlyRent">Monthly renting fee (€)</label>
+                <div class="simulator-form__group simulator-form__group--mode renting-only is-hidden">
+                  <div class="simulator-form__panel simulator-form__panel--mode">
+                    <div class="form-grid form-grid--sim">
+                      <div class="field field-span-2">
+                        <label for="monthlyRent">Monthly payment (€)</label>
                         <input id="monthlyRent" name="monthlyRent" type="number" min="0" placeholder="E.g.: 640" data-placeholder-pt="Ex: 640" data-placeholder-en="E.g.: 640" />
                       </div>
 
-                      <div class="field renting-field is-hidden">
-                        <label for="initialPayment">Initial payment (€)</label>
-                        <input id="initialPayment" name="initialPayment" type="number" min="0" value="0" />
+                      <div class="field">
+                        <label for="rentingInitialPayment">Initial payment (€) <span class="label-optional">optional</span></label>
+                        <input id="rentingInitialPayment" name="rentingInitialPayment" type="number" min="0" value="" placeholder="—" data-placeholder-pt="—" data-placeholder-en="—" />
                       </div>
 
-                      <div class="field renting-field is-hidden">
-                        <label for="contractMonths">Contract duration (months)</label>
-                        <input id="contractMonths" name="contractMonths" type="number" min="1" placeholder="E.g.: 48" data-placeholder-pt="Ex: 48" data-placeholder-en="E.g.: 48" />
+                      <div class="field">
+                        <label for="contractAnnualKm">Contract annual mileage <span class="label-optional">optional</span></label>
+                        <input id="contractAnnualKm" name="contractAnnualKm" type="number" min="0" value="" placeholder="Same as average annual if empty" data-placeholder-pt="Igual à média anual se vazio" data-placeholder-en="Same as annual if empty" />
                       </div>
 
-                      <div class="field renting-field is-hidden">
-                        <label for="annualIncludedKm">Annual included mileage</label>
-                        <input id="annualIncludedKm" name="annualIncludedKm" type="number" min="0" placeholder="E.g.: 20000" data-placeholder-pt="Ex: 20000" data-placeholder-en="E.g.: 20000" />
+                      <fieldset class="field-span-2 simulator-fieldset">
+                        <legend class="simulator-fieldset-legend">Monthly payment includes:</legend>
+                        <div class="simulator-includes-grid">
+                          <label class="simulator-checkbox-field">
+                            <input type="checkbox" id="rentIncludesMaintenance" name="rentIncludesMaintenance" checked />
+                            <span>Maintenance</span>
+                          </label>
+                          <label class="simulator-checkbox-field">
+                            <input type="checkbox" id="rentIncludesTyres" name="rentIncludesTyres" checked />
+                            <span>Tyres</span>
+                          </label>
+                          <label class="simulator-checkbox-field">
+                            <input type="checkbox" id="rentIncludesTaxes" name="rentIncludesTaxes" checked />
+                            <span>Taxes and fees</span>
+                          </label>
+                          <label class="simulator-checkbox-field">
+                            <input type="checkbox" id="rentIncludesInsurance" name="rentIncludesInsurance" />
+                            <span>Insurance</span>
+                          </label>
+                        </div>
+                      </fieldset>
+
+                      <div class="field field-span-2 renting-insurance-field">
+                        <label for="annualInsuranceRenting">Annual insurance (€) <span class="label-optional">optional; estimate if blank</span></label>
+                        <input id="annualInsuranceRenting" name="annualInsuranceRenting" type="number" min="0" value="" placeholder="—" data-placeholder-pt="—" data-placeholder-en="—" />
                       </div>
 
-                      <div class="field renting-field is-hidden">
-                        <label for="excessMileageCost">Excess mileage cost per km (€)</label>
-                        <input id="excessMileageCost" name="excessMileageCost" type="number" min="0" step="0.01" placeholder="E.g.: 0.08" data-placeholder-pt="Ex: 0.08" data-placeholder-en="E.g.: 0.08" />
+                      <div class="field">
+                        <label for="excessCostPerKm">Excess mileage rate (€/km) <span class="label-optional">optional</span></label>
+                        <input id="excessCostPerKm" name="excessCostPerKm" type="number" min="0" step="0.01" value="" placeholder="0.09" data-placeholder-pt="0,09" data-placeholder-en="0.09" />
                       </div>
 
-                      <div class="field renting-field is-hidden">
-                        <label for="maintenanceIncluded">Maintenance included</label>
-                        <select id="maintenanceIncluded" name="maintenanceIncluded">
-                          <option value="yes">Yes</option>
-                          <option value="no">No</option>
-                        </select>
+                      <div class="field">
+                        <label for="excessKmPeriod">Excess kilometres over period (total) <span class="label-optional">optional</span></label>
+                        <input id="excessKmPeriod" name="excessKmPeriod" type="number" min="0" step="1" value="" placeholder="Estimated if empty" data-placeholder-pt="Calculado se vazio" data-placeholder-en="Estimated if empty" />
                       </div>
 
-                      <div class="field renting-field is-hidden">
-                        <label for="tyresIncluded">Tyres included</label>
-                        <select id="tyresIncluded" name="tyresIncluded">
-                          <option value="yes">Yes</option>
-                          <option value="no">No</option>
-                        </select>
-                      </div>
-
-                      <div class="field renting-field is-hidden">
-                        <label for="insuranceIncluded">Insurance included</label>
-                        <select id="insuranceIncluded" name="insuranceIncluded">
-                          <option value="yes">Yes</option>
-                          <option value="no">No</option>
-                        </select>
-                      </div>
-
-                      <div class="field renting-field is-hidden">
-                        <label for="taxesIncluded">Taxes/fees included</label>
-                        <select id="taxesIncluded" name="taxesIncluded">
-                          <option value="yes">Yes</option>
-                          <option value="no">No</option>
-                        </select>
+                      <div class="field field-span-2">
+                        <label for="endContractCosts">Estimated end-of-contract / damage costs (€) <span class="label-optional">optional</span></label>
+                        <input id="endContractCosts" name="endContractCosts" type="number" min="0" step="1" value="" placeholder="—" data-placeholder-pt="—" data-placeholder-en="—" />
                       </div>
                     </div>
-                  </article>
-                  <article class="fleet-group">
-                    <div class="fleet-group-grid">
-                      <div class="field">
-                        <label for="annualInsurance">Annual insurance (€)</label>
-                        <input id="annualInsurance" name="annualInsurance" type="number" min="0" value="0" />
-                      </div>
-                      <div class="field">
-                        <label for="annualTaxes">Annual taxes/fees (€)</label>
-                        <input id="annualTaxes" name="annualTaxes" type="number" min="0" value="0" />
-                      </div>
-                      <div class="field">
-                        <label for="maintenanceMode">Maintenance</label>
-                        <select id="maintenanceMode" name="maintenanceMode">
-                          <option value="annual">Annual amount</option>
-                          <option value="per_km">Per-km amount</option>
-                        </select>
-                      </div>
-                      <div class="field maintenance-annual-field">
-                        <label for="maintenanceAnnual">Annual maintenance (€)</label>
-                        <input id="maintenanceAnnual" name="maintenanceAnnual" type="number" min="0" value="0" />
-                      </div>
-                      <div class="field maintenance-per-km-field is-hidden">
-                        <label for="maintenancePerKm">Maintenance per km (€)</label>
-                        <input id="maintenancePerKm" name="maintenancePerKm" type="number" min="0" step="0.001" value="0" />
-                      </div>
-                      <div class="field">
-                        <label for="tyresMode">Tyres</label>
-                        <select id="tyresMode" name="tyresMode">
-                          <option value="annual">Annual amount</option>
-                          <option value="per_km">Per-km amount</option>
-                        </select>
-                      </div>
-                      <div class="field tyres-annual-field">
-                        <label for="tyresAnnual">Annual tyres (€)</label>
-                        <input id="tyresAnnual" name="tyresAnnual" type="number" min="0" value="0" />
-                      </div>
-                      <div class="field tyres-per-km-field is-hidden">
-                        <label for="tyresPerKm">Tyres per km (€)</label>
-                        <input id="tyresPerKm" name="tyresPerKm" type="number" min="0" step="0.001" value="0" />
-                      </div>
-                    </div>
-                  </article>
+                  </div>
                 </div>
 
                 <div class="simulator-footer">
-                  <button type="submit" class="btn btn-primary btn-large">View estimate</button>
+                  <button type="submit" class="btn btn-primary btn-large btn-sim-submit">View estimate</button>
                   <small id="simulatorFeedback">Indicative single-vehicle simulation based on average market assumptions.</small>
                 </div>
               </form>
@@ -399,28 +421,49 @@
                   <div class="result-box result-box-wide">
                     <span>Cost breakdown</span>
                     <small id="resultBreakdownBase">Acquisition/depreciation: —</small>
+                    <div id="resultResidualWrap" class="result-residual-wrap is-hidden">
+                      <small id="resultResidualEstimated">Estimated residual value: —</small>
+                      <small id="resultResidualNote" class="result-residual-note">Internal estimate based on depreciation and usage profile.</small>
+                    </div>
                     <small id="resultBreakdownEnergy">Energy: —</small>
                     <small id="resultBreakdownMaintenance">Maintenance: —</small>
                     <small id="resultBreakdownTyres">Tyres: —</small>
                     <small id="resultBreakdownInsurance">Insurance: —</small>
                     <small id="resultBreakdownTaxes">Taxes/fees: —</small>
                     <small id="resultBreakdownExcess">Excess mileage: —</small>
-                    <small id="resultBreakdownDowntime">Downtime: —</small>
+                    <small id="resultBreakdownOther">Other / end of contract: —</small>
                   </div>
                   <div class="result-box result-box-wide">
                     <small id="resultDisclaimer">Indicative simulation for decision support. Results depend on the data entered and on the actual acquisition, usage, tax, and contract conditions.</small>
+                  </div>
+                  <div class="result-box result-box-wide">
+                    <span>Want a personalized analysis for your fleet?</span>
+                    <form class="simulator-form" action="/en/#contacto" method="get">
+                      <div class="form-grid form-grid-top">
+                        <div class="field field-wide">
+                          <label for="quickLeadEmail">Email</label>
+                          <input id="quickLeadEmail" name="email" type="email" autocomplete="email" required />
+                        </div>
+                      </div>
+                      <div class="simulator-footer">
+                        <button type="submit" class="btn btn-secondary">Receive analysis</button>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          </div>
         </div>
       </section>
 
-      <section class="benefits section-light">
+      <section class="section section--surface">
         <div class="container benefits-wrap">
-          <div class="section-kicker">Added value</div>
-          <h2>Financial and operational approach</h2>
+          <div class="section-head-center container-narrow">
+            <div class="section-kicker">Added value</div>
+            <h2>Financial and operational approach</h2>
+          </div>
 
           <div class="benefits-list">
             <div class="benefit-item">
@@ -442,7 +485,7 @@
             <div class="benefit-item">
               <span class="benefit-icon"></span>
               <div>
-                <h3>Optimized strategies for decisive action</h3>
+                <h3>Optimised strategies for decisive action</h3>
                 <p>A foundation for qualified conversations and evidence-based recommendations.</p>
               </div>
             </div>
@@ -450,18 +493,21 @@
         </div>
       </section>
 
-      <section class="closing-cta">
-        <div class="closing-cta-media" role="img" aria-label="Strategic fleet consulting — fleet cost reduction and total cost of ownership decisions for businesses."></div>
-        <div class="closing-cta-scrim" aria-hidden="true"></div>
-
-        <div class="container closing-cta-wrap">
+      <section class="section section--closing section--bleed" aria-label="Strategic consultation">
+        <div class="section__bleed" aria-hidden="true">
+          <div class="closing-cta-media" role="img" aria-label="Strategic fleet consulting — fleet cost reduction and total cost of ownership decisions for businesses."></div>
+          <div class="closing-cta-scrim"></div>
+        </div>
+        <div class="container">
+        <div class="closing-cta-wrap">
           <div class="section-kicker section-kicker-light">Strategic consultation</div>
           <h2>More than price, what matters is total cost.</h2>
           <a href="/en/#contacto" class="btn btn-primary btn-large">Book a tailored consultation</a>
         </div>
+        </div>
       </section>
 
-      <section id="contacto" class="contact-section section-light">
+      <section id="contacto" class="section section--tint">
         <div class="container contact-wrap">
           <h2>Contact us</h2>
           <p class="contact-intro">
@@ -540,50 +586,50 @@
               </p>
             </div>
           </form>
+          </div>
         </div>
       </section>
 
-      <section id="privacy" class="privacy-section section-light" aria-labelledby="privacy-title">
-        <div class="privacy-wrap">
-          <h2 id="privacy-title">Privacy Policy</h2>
+      <section id="privacy" class="section section--surface section--privacy-doc" aria-labelledby="privacy-title">
+        <div class="privacy-doc">
+          <header class="privacy-doc-header">
+            <h2 id="privacy-title" class="privacy-doc-title">Privacy Policy</h2>
+          </header>
+          <div class="privacy-doc-body">
+            <p>AnaliseFrota is committed to protecting the privacy of its users.</p>
 
-          <div class="privacy-body">
-            <div>
-              <p>AnaliseFrota is committed to protecting the privacy of its users.</p>
+            <p>AnaliseFrota is an independent consulting service and does not represent or constitute an official entity of any vehicle manufacturer.</p>
 
-              <p>AnaliseFrota is an independent consulting service and does not represent or constitute an official entity of any vehicle manufacturer.</p>
+            <p>Services include analysis and recommendation of mobility solutions and may involve proposals for the acquisition of new vehicles within a consulting relationship.</p>
 
-              <p>Services include analysis and recommendation of mobility solutions and may involve proposals for the acquisition of new vehicles within a consulting relationship.</p>
+            <h3 class="privacy-doc-subtitle">Data collected</h3>
+            <p>We collect data such as name, business email, phone, company and fleet context, solely for analysis and contact.</p>
 
-              <h3>Data collected</h3>
-              <p>We collect data such as name, business email, phone, company and fleet context, solely for analysis and contact.</p>
+            <h3 class="privacy-doc-subtitle">Purpose</h3>
+            <p>Data is used for:</p>
+            <ul class="privacy-doc-list">
+              <li>Consultative fleet analysis</li>
+              <li>Personalised commercial contact</li>
+              <li>Presentation of corporate mobility solutions</li>
+            </ul>
 
-              <h3>Purpose</h3>
-              <p>Data is used for:</p>
-              <ul>
-                <li>Consultative fleet analysis</li>
-                <li>Personalised commercial contact</li>
-                <li>Presentation of corporate mobility solutions</li>
-              </ul>
+            <h3 class="privacy-doc-subtitle">Positioning</h3>
+            <p>AnaliseFrota operates as an independent fleet analysis and optimisation service. In the course of consulting, recommendations may include the acquisition of new vehicles, including brands represented commercially.</p>
 
-              <h3>Positioning</h3>
-              <p>AnaliseFrota operates as an independent fleet analysis and optimisation service. In the course of consulting, recommendations may include the acquisition of new vehicles, including brands represented commercially.</p>
+            <h3 class="privacy-doc-subtitle">Legal basis</h3>
+            <p>Explicit user consent.</p>
 
-              <h3>Legal basis</h3>
-              <p>Explicit user consent.</p>
+            <h3 class="privacy-doc-subtitle">Data sharing</h3>
+            <p>Data is not sold or shared with third parties except when necessary for a commercial proposal.</p>
 
-              <h3>Data sharing</h3>
-              <p>Data is not sold or shared with third parties except when necessary for a commercial proposal.</p>
+            <h3 class="privacy-doc-subtitle">Retention</h3>
+            <p>Data is stored only for as long as necessary.</p>
 
-              <h3>Retention</h3>
-              <p>Data is stored only for as long as necessary.</p>
+            <h3 class="privacy-doc-subtitle">Your rights</h3>
+            <p>You may request access to, rectification or erasure of your data.</p>
 
-              <h3>Your rights</h3>
-              <p>You may request access to, rectification or erasure of your data.</p>
-
-              <h3>Contact</h3>
-              <p>For any privacy-related questions, please use the contact form.</p>
-            </div>
+            <h3 class="privacy-doc-subtitle">Contact</h3>
+            <p>For any privacy-related questions, please use the contact form.</p>
           </div>
         </div>
       </section>

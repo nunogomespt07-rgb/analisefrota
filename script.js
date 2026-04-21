@@ -10,11 +10,25 @@ function el(id) {
 
 const form = el("tcoForm");
 const acquisitionModel = el("acquisitionModel");
-const financingEnabled = el("financingEnabled");
-const maintenanceMode = el("maintenanceMode");
-const tyresMode = el("tyresMode");
 const resultsPanel = el("resultsPanel");
 const feedback = el("simulatorFeedback");
+
+/**
+ * Calibration constants — keep out of DOM; tune here.
+ */
+const TCO_INTERNAL = {
+  maintenanceBase: { combustion: 430, hybrid: 470, electric: 320 },
+  tyresBase: { combustion: 200, hybrid: 220, electric: 170 },
+  taxesBase: { combustion: 140, hybrid: 125, electric: 95 },
+  insuranceBase: { combustion: 480, hybrid: 450, electric: 420 },
+  profileFactor: { urbano: 1.1, misto: 1, estrada: 0.95 },
+  defaultExcessMileagePerKm: 0.09,
+  rentingIncludedKmFactor: 0.92,
+  kmOpexScale(annualKm) {
+    if (annualKm <= 0) return 1;
+    return Math.min(1.35, Math.max(0.82, 1 + (annualKm - 20000) / 90000));
+  },
+};
 
 function toNumber(value) {
   const parsed = Number(value);
@@ -33,6 +47,96 @@ function formatCurrency(value, fractionDigits = 0) {
     minimumFractionDigits: fractionDigits,
     maximumFractionDigits: fractionDigits,
   }).format(value);
+}
+
+function powertrainKey(powertrain) {
+  if (powertrain === "hybrid" || powertrain === "electric" || powertrain === "combustion") {
+    return powertrain;
+  }
+  return "combustion";
+}
+
+/**
+ * Annual maintenance estimate (€/year) from powertrain, usage profile, annual km.
+ */
+function estimateMaintenance(powertrain, profile, annualKm) {
+  const k = powertrainKey(powertrain);
+  const profileFac = TCO_INTERNAL.profileFactor[profile] ?? 1;
+  const km = TCO_INTERNAL.kmOpexScale(annualKm);
+  return (TCO_INTERNAL.maintenanceBase[k] ?? 420) * profileFac * km;
+}
+
+/**
+ * Annual tyres estimate (€/year).
+ */
+function estimateTyres(powertrain, profile, annualKm) {
+  const k = powertrainKey(powertrain);
+  const profileFac = TCO_INTERNAL.profileFactor[profile] ?? 1;
+  const km = TCO_INTERNAL.kmOpexScale(annualKm);
+  return (TCO_INTERNAL.tyresBase[k] ?? 200) * profileFac * km;
+}
+
+/**
+ * Annual taxes / registration-type fees estimate (€/year).
+ */
+function estimateTaxes(powertrain, profile) {
+  const k = powertrainKey(powertrain);
+  const profileFac = TCO_INTERNAL.profileFactor[profile] ?? 1;
+  return (TCO_INTERNAL.taxesBase[k] ?? 120) * profileFac;
+}
+
+function estimateDefaultInsuranceAnnual(powertrain, profile) {
+  const k = powertrainKey(powertrain);
+  const profileFac = TCO_INTERNAL.profileFactor[profile] ?? 1;
+  return (TCO_INTERNAL.insuranceBase[k] ?? 450) * profileFac;
+}
+
+/**
+ * Total energy cost over the analysis period (€).
+ */
+function calculateEnergyCost(totalKm, consumptionPer100km, energyUnitPrice) {
+  const km = Math.max(0, totalKm);
+  const cons = nonNegative(consumptionPer100km);
+  const price = nonNegative(energyUnitPrice);
+  return (km / 100) * cons * price;
+}
+
+/**
+ * Estimated resale / residual value (€) at end of the analysis period.
+ * Internal market-style heuristic (age, mileage band, powertrain mix, usage).
+ * Replaceable hook for future valuation API — not supplier-specific data.
+ */
+function estimateResidualValue({ purchasePrice, powertrain, profile, annualKm, years }) {
+  const price = Math.max(0, purchasePrice);
+  const y = Math.max(0.25, Math.min(15, years));
+  const kmYear = Math.max(0, annualKm);
+  const totalKm = kmYear * years;
+
+  if (price <= 0 || years <= 0) return 0;
+
+  const ptKey = powertrainKey(powertrain);
+  const powertrainRetention =
+    ptKey === "electric" ? 1.09 : ptKey === "hybrid" ? 1.045 : 1;
+
+  const profileRetention =
+    profile === "urbano" ? 0.97 : profile === "estrada" ? 1.015 : 1;
+
+  const ageRetention = Math.exp(-0.155 * y);
+
+  const kmRetention = Math.exp(-0.0000084 * totalKm);
+
+  const referenceAnnualKm = 17000;
+  const annualIntensity =
+    kmYear > 0 ? Math.min(2.15, Math.max(0.55, kmYear / referenceAnnualKm)) : 1;
+  const intensityAdj = Math.pow(annualIntensity, -0.28);
+
+  let ratio =
+    ageRetention * kmRetention * powertrainRetention * profileRetention * intensityAdj;
+
+  ratio = Math.min(0.76, Math.max(0.14, ratio));
+
+  const raw = price * ratio;
+  return Math.min(price, Math.round(raw));
 }
 
 function getIndicativeFiscalReading(motorization) {
@@ -76,14 +180,14 @@ function getRecommendation(costPerKm) {
 
   return currentLang === "en"
     ? "Profile with optimisation potential in acquisition, usage, and powertrain."
-    : "Perfil com potencial de otimização em aquisição, utilização e motorização.";
+    : "Perfil com potencial de optimização em aquisição, utilização e motorização.";
 }
 
 function updateDynamicPlaceholders() {
-  document.querySelectorAll("[data-placeholder-pt]").forEach((el) => {
-    const pt = el.getAttribute("data-placeholder-pt");
-    const en = el.getAttribute("data-placeholder-en");
-    el.placeholder = currentLang === "en" ? en || pt : pt || en;
+  document.querySelectorAll("[data-placeholder-pt]").forEach((node) => {
+    const pt = node.getAttribute("data-placeholder-pt");
+    const en = node.getAttribute("data-placeholder-en");
+    node.placeholder = currentLang === "en" ? en || pt : pt || en;
   });
 }
 
@@ -99,40 +203,37 @@ function toggleAcquisitionFields() {
   if (!acquisitionModel) return;
   const isRenting = acquisitionModel.value === "renting";
 
-  document.querySelectorAll(".purchase-field").forEach((el) => {
-    el.classList.toggle("is-hidden", isRenting);
+  document.querySelectorAll(".purchase-only").forEach((node) => {
+    node.classList.toggle("is-hidden", isRenting);
   });
 
-  document.querySelectorAll(".renting-field").forEach((el) => {
-    el.classList.toggle("is-hidden", !isRenting);
+  document.querySelectorAll(".renting-only").forEach((node) => {
+    node.classList.toggle("is-hidden", !isRenting);
   });
+
+  toggleInternalOpexFields();
+  toggleRentingInsuranceField();
 }
 
-function toggleFinancingFields() {
-  const isFinanced = financingEnabled?.value === "yes";
-  document.querySelectorAll(".financing-field").forEach((field) => {
-    field.classList.toggle("is-hidden", !isFinanced);
-  });
+function toggleInternalOpexFields() {
+  const chk = el("useInternalOpexEstimate");
+  const manual = document.querySelector(".purchase-manual-opex");
+  if (!chk || !manual) return;
+  const useEst = chk.checked;
+  manual.classList.toggle("is-hidden", useEst);
+  if (useEst) {
+    manual.removeAttribute("open");
+  } else {
+    manual.setAttribute("open", "");
+  }
 }
 
-function toggleMaintenanceFields() {
-  const perKm = maintenanceMode?.value === "per_km";
-  document.querySelectorAll(".maintenance-annual-field").forEach((field) => {
-    field.classList.toggle("is-hidden", perKm);
-  });
-  document.querySelectorAll(".maintenance-per-km-field").forEach((field) => {
-    field.classList.toggle("is-hidden", !perKm);
-  });
-}
-
-function toggleTyresFields() {
-  const perKm = tyresMode?.value === "per_km";
-  document.querySelectorAll(".tyres-annual-field").forEach((field) => {
-    field.classList.toggle("is-hidden", perKm);
-  });
-  document.querySelectorAll(".tyres-per-km-field").forEach((field) => {
-    field.classList.toggle("is-hidden", !perKm);
-  });
+function toggleRentingInsuranceField() {
+  const rentInclIns = el("rentIncludesInsurance");
+  const row = document.querySelector(".renting-insurance-field");
+  if (!rentInclIns || !row) return;
+  const hide = rentInclIns.checked;
+  row.classList.toggle("is-hidden", hide);
 }
 
 function setFeedback(message) {
@@ -151,63 +252,252 @@ function getTexts() {
   return currentLang === "en"
     ? {
         invalid: "Please review the highlighted inputs: ",
-        defaultHint: "Indicative single-vehicle simulation based on average market assumptions.",
-        purchaseBase: "Acquisition/depreciation",
-        rentingBase: "Renting base",
+        defaultHint:
+          "Indicative simulation: purchase uses an internal residual estimate (shown in results); leasing follows your contract “includes” choices.",
+        purchaseBase: "Net acquisition (price − estimated residual)",
+        rentingBase: "Lease payments + initial payment",
         energy: "Energy",
         maintenance: "Maintenance",
         tyres: "Tyres",
         insurance: "Insurance",
-        taxes: "Taxes/fees",
+        taxes: "Taxes / fees",
         excess: "Excess mileage",
-        downtime: "Downtime cost",
-        downtimeNote: "Estimated based on operational averages",
+        other: "End of contract / other",
+        maintEst: "(estimated)",
+        tyresEst: "(estimated)",
+        taxesEst: "(estimated)",
+        insEst: "(estimated)",
+        inclRent: "(included in payment)",
       }
     : {
         invalid: "Por favor valide os campos: ",
-        defaultHint: "Simulação indicativa para uma viatura, baseada em pressupostos médios de mercado.",
-        purchaseBase: "Aquisição/depreciação",
-        rentingBase: "Base de renting",
+        defaultHint:
+          "Simulação indicativa: na compra o valor residual é estimado internamente (ver resultados); no renting aplicam-se as opções «incluído na renda».",
+        purchaseBase: "Aquisição líquida (preço − residual estimado)",
+        rentingBase: "Rendas + entrada inicial",
         energy: "Energia",
         maintenance: "Manutenção",
         tyres: "Pneus",
         insurance: "Seguro",
-        taxes: "Impostos/taxas",
-        excess: "Excesso de km",
-        downtime: "Custo de indisponibilidade",
-        downtimeNote: "Estimativa baseada em médias operacionais",
+        taxes: "Impostos / taxas",
+        excess: "Excesso de quilometragem",
+        other: "Fim de contrato / outros",
+        maintEst: "(estimado)",
+        tyresEst: "(estimado)",
+        taxesEst: "(estimado)",
+        insEst: "(estimado)",
+        inclRent: "(incluído na renda)",
       };
 }
 
-function setBreakdownLine(id, label, value) {
+function setBreakdownLine(id, label, value, suffix = "") {
   const node = el(id);
   if (node) {
-    node.textContent = `${label}: ${formatCurrency(value)}`;
+    node.textContent = `${label}: ${formatCurrency(value)}${suffix}`;
   }
 }
 
-function estimateAnnualDowntimeCost(kmPerYear) {
-  if (kmPerYear > 0) {
-    return kmPerYear * 0.01;
+/**
+ * Purchase TCO over the analysis period (€).
+ * Formula: preço − residual_estimado + entrada_opcional + energia + seguro + impostos + manutenção + pneus
+ */
+function calculatePurchaseTCO(ctx) {
+  const {
+    purchasePrice,
+    purchaseInitialPayment,
+    years,
+    kmPerYear,
+    powertrain,
+    profile,
+    consumption,
+    energyPrice,
+    useInternalOpexEstimate,
+    manualMaintenanceAnnual,
+    manualTyresAnnual,
+    manualTaxesAnnual,
+    insuranceUserAnnual,
+  } = ctx;
+
+  const totalKm = years * kmPerYear;
+  const energyTotal = calculateEnergyCost(totalKm, consumption, energyPrice);
+
+  const residualEstimated = estimateResidualValue({
+    purchasePrice,
+    powertrain,
+    profile,
+    annualKm: kmPerYear,
+    years,
+  });
+
+  const netAcquisition = Math.max(0, purchasePrice - residualEstimated);
+  const initialCash = nonNegative(purchaseInitialPayment);
+
+  let maintenanceAnnual;
+  let tyresAnnual;
+  let taxesAnnual;
+
+  if (useInternalOpexEstimate) {
+    maintenanceAnnual = estimateMaintenance(powertrain, profile, kmPerYear);
+    tyresAnnual = estimateTyres(powertrain, profile, kmPerYear);
+    taxesAnnual = estimateTaxes(powertrain, profile);
+  } else {
+    maintenanceAnnual = nonNegative(manualMaintenanceAnnual);
+    tyresAnnual = nonNegative(manualTyresAnnual);
+    taxesAnnual = nonNegative(manualTaxesAnnual);
   }
-  return 4 * 120;
+
+  const maintenanceTotal = years * maintenanceAnnual;
+  const tyresTotal = years * tyresAnnual;
+  const taxesTotal = years * taxesAnnual;
+
+  const defaultIns = estimateDefaultInsuranceAnnual(powertrain, profile);
+  const insuranceAnnualResolved =
+    insuranceUserAnnual > 0 ? insuranceUserAnnual : defaultIns;
+  const insuranceTotal = years * insuranceAnnualResolved;
+
+  const tcoTotal =
+    netAcquisition +
+    initialCash +
+    energyTotal +
+    insuranceTotal +
+    taxesTotal +
+    maintenanceTotal +
+    tyresTotal;
+
+  return {
+    tcoTotal,
+    netAcquisition,
+    initialCash,
+    energyTotal,
+    maintenanceTotal,
+    tyresTotal,
+    taxesTotal,
+    insuranceTotal,
+    excessKmCost: 0,
+    endContractCost: 0,
+    rentPaymentsTotal: 0,
+    maintenanceAnnualUsed: maintenanceAnnual,
+    tyresAnnualUsed: tyresAnnual,
+    taxesAnnualUsed: taxesAnnual,
+    insuranceAnnualResolved,
+    usedInternalMaintenance: useInternalOpexEstimate,
+    usedInternalTyres: useInternalOpexEstimate,
+    usedInternalTaxes: useInternalOpexEstimate,
+    usedInternalInsurance: insuranceUserAnnual <= 0,
+    residualEstimated,
+  };
+}
+
+/**
+ * Renting TCO over the analysis period (€).
+ */
+function calculateRentingTCO(ctx) {
+  const {
+    monthlyRent,
+    months,
+    rentingInitialPayment,
+    kmPerYear,
+    years,
+    contractAnnualKm,
+    powertrain,
+    profile,
+    consumption,
+    energyPrice,
+    rentIncludesMaintenance,
+    rentIncludesTyres,
+    rentIncludesTaxes,
+    rentIncludesInsurance,
+    insuranceUserAnnual,
+    excessCostPerKmUser,
+    excessKmPeriodUser,
+    excessKmPeriodProvided,
+    endContractCosts,
+  } = ctx;
+
+  const totalKm = years * kmPerYear;
+  const energyTotal = calculateEnergyCost(totalKm, consumption, energyPrice);
+
+  const rentPaymentsTotal = monthlyRent * months;
+  const initialCash = nonNegative(rentingInitialPayment);
+
+  const maintAnn = estimateMaintenance(powertrain, profile, kmPerYear);
+  const tyresAnn = estimateTyres(powertrain, profile, kmPerYear);
+  const taxesAnn = estimateTaxes(powertrain, profile);
+  const defaultInsAnn = estimateDefaultInsuranceAnnual(powertrain, profile);
+
+  const maintenanceTotal = rentIncludesMaintenance ? 0 : years * maintAnn;
+  const tyresTotal = rentIncludesTyres ? 0 : years * tyresAnn;
+  const taxesTotal = rentIncludesTaxes ? 0 : years * taxesAnn;
+
+  let insuranceTotal = 0;
+  let insuranceAnnualResolved = 0;
+  if (!rentIncludesInsurance) {
+    insuranceAnnualResolved =
+      insuranceUserAnnual > 0 ? insuranceUserAnnual : defaultInsAnn;
+    insuranceTotal = years * insuranceAnnualResolved;
+  }
+
+  const includedKmYear = contractAnnualKm > 0 ? contractAnnualKm : kmPerYear;
+  const includedKmYearAdjusted = Math.max(
+    0,
+    includedKmYear * TCO_INTERNAL.rentingIncludedKmFactor
+  );
+  const includedKmTotal = includedKmYearAdjusted * years;
+  let excessKm = Math.max(0, totalKm - includedKmTotal);
+
+  if (excessKmPeriodProvided) {
+    excessKm = excessKmPeriodUser;
+  }
+
+  const rate =
+    excessCostPerKmUser > 0 ? excessCostPerKmUser : TCO_INTERNAL.defaultExcessMileagePerKm;
+  const excessKmCost = excessKm * rate;
+
+  const endContract = nonNegative(endContractCosts);
+
+  const tcoTotal =
+    rentPaymentsTotal +
+    initialCash +
+    energyTotal +
+    insuranceTotal +
+    maintenanceTotal +
+    tyresTotal +
+    taxesTotal +
+    excessKmCost +
+    endContract;
+
+  return {
+    tcoTotal,
+    netAcquisition: 0,
+    initialCash,
+    energyTotal,
+    maintenanceTotal,
+    tyresTotal,
+    taxesTotal,
+    insuranceTotal,
+    excessKmCost,
+    endContractCost: endContract,
+    rentPaymentsTotal,
+    maintenanceAnnualUsed: maintAnn,
+    tyresAnnualUsed: tyresAnn,
+    taxesAnnualUsed: taxesAnn,
+    insuranceAnnualResolved,
+    usedInternalInsurance: !rentIncludesInsurance && insuranceUserAnnual <= 0,
+    rentIncludesMaintenance,
+    rentIncludesTyres,
+    rentIncludesTaxes,
+    rentIncludesInsurance,
+    excessKm,
+    rateUsed: rate,
+  };
 }
 
 if (acquisitionModel) {
   acquisitionModel.addEventListener("change", toggleAcquisitionFields);
 }
 
-if (financingEnabled) {
-  financingEnabled.addEventListener("change", toggleFinancingFields);
-}
-
-if (maintenanceMode) {
-  maintenanceMode.addEventListener("change", toggleMaintenanceFields);
-}
-
-if (tyresMode) {
-  tyresMode.addEventListener("change", toggleTyresFields);
-}
+el("useInternalOpexEstimate")?.addEventListener("change", toggleInternalOpexFields);
+el("rentIncludesInsurance")?.addEventListener("change", toggleRentingInsuranceField);
 
 form?.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -215,122 +505,107 @@ form?.addEventListener("submit", (event) => {
 
   const model = acquisitionModel?.value || "purchase";
   const powertrain = el("powertrainType")?.value || "";
+  const profile = el("usageProfile")?.value || "";
   const kmPerYear = toNumber(el("annualKm")?.value);
   const years = toNumber(el("analysisYears")?.value);
   const totalMonths = years * 12;
   const totalKm = years * kmPerYear;
   const consumption = nonNegative(el("consumptionValue")?.value);
   const energyPrice = nonNegative(el("energyPrice")?.value);
-  const energyCost = (totalKm / 100) * consumption * energyPrice;
-
-  const maintenanceTotal =
-    (maintenanceMode?.value || "annual") === "per_km"
-      ? totalKm * nonNegative(el("maintenancePerKm")?.value)
-      : years * nonNegative(el("maintenanceAnnual")?.value);
-
-  const tyresTotal =
-    (tyresMode?.value || "annual") === "per_km"
-      ? totalKm * nonNegative(el("tyresPerKm")?.value)
-      : years * nonNegative(el("tyresAnnual")?.value);
-
-  const insuranceTotal = years * nonNegative(el("annualInsurance")?.value);
-  const taxesTotal = years * nonNegative(el("annualTaxes")?.value);
-  const annualDowntimeCost = estimateAnnualDowntimeCost(kmPerYear);
-  const downtimeTotal = years * annualDowntimeCost;
 
   const errors = [];
   addValidationError(errors, !powertrain, currentLang === "en" ? "powertrain type" : "tipo de motorização");
+  addValidationError(errors, !profile, currentLang === "en" ? "usage profile" : "perfil de utilização");
   addValidationError(errors, kmPerYear <= 0, currentLang === "en" ? "annual mileage > 0" : "quilometragem anual > 0");
   addValidationError(errors, years <= 0, currentLang === "en" ? "analysis period > 0" : "período de análise > 0");
 
-  let tcoTotal = 0;
-  let baseCost = 0;
-  let excessKmCost = 0;
+  let result;
 
   if (model === "purchase") {
     const purchasePrice = nonNegative(el("purchasePrice")?.value);
-    const downPayment = nonNegative(el("downPayment")?.value);
-    const residualValue = nonNegative(el("residualValue")?.value);
-    const financedPrincipal = Math.max(0, purchasePrice - downPayment);
-    const financeOn = financingEnabled?.value === "yes";
+    const purchaseInitialPayment = nonNegative(el("purchaseInitialPayment")?.value);
+    const useInternalOpexEstimate = el("useInternalOpexEstimate")?.checked ?? true;
+    const insuranceUserAnnual = nonNegative(el("annualInsurancePurchase")?.value);
 
-    addValidationError(
-      errors,
-      residualValue > purchasePrice,
-      currentLang === "en"
-        ? "residual value must be <= purchase price"
-        : "valor residual deve ser <= preço de compra"
-    );
+    addValidationError(errors, purchasePrice <= 0, currentLang === "en" ? "purchase price > 0" : "preço de compra > 0");
 
-    let financingCost = 0;
-    if (financeOn) {
-      const annualRate = nonNegative(el("annualInterestRate")?.value);
-      const financingMonths = toNumber(el("financingMonths")?.value);
+    if (!useInternalOpexEstimate) {
+      const mm = el("manualMaintenanceAnnual")?.value;
+      const mt = el("manualTyresAnnual")?.value;
+      const mtx = el("manualTaxesAnnual")?.value;
       addValidationError(
         errors,
-        financingMonths <= 0,
-        currentLang === "en" ? "financing term > 0 months" : "prazo de financiamento > 0 meses"
+        mm === "" || mt === "" || mtx === "",
+        currentLang === "en"
+          ? "enter manual maintenance, tyres, and taxes (or enable internal estimates)"
+          : "indique manutenção, pneus e impostos manuais (ou active estimativas internas)"
       );
-
-      if (financingMonths > 0 && financedPrincipal > 0) {
-        const monthlyRate = annualRate / 12 / 100;
-        const monthlyPayment =
-          monthlyRate === 0
-            ? financedPrincipal / financingMonths
-            : (financedPrincipal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -financingMonths));
-        const totalPaidFinancing = monthlyPayment * financingMonths;
-        financingCost = Math.max(0, totalPaidFinancing - financedPrincipal);
-      }
     }
 
-    const depreciation = Math.max(0, purchasePrice - residualValue);
-    baseCost = downPayment + financingCost + depreciation;
-    tcoTotal =
-      baseCost +
-      energyCost +
-      maintenanceTotal +
-      tyresTotal +
-      insuranceTotal +
-      taxesTotal +
-      downtimeTotal;
+    result = calculatePurchaseTCO({
+      purchasePrice,
+      purchaseInitialPayment,
+      years,
+      kmPerYear,
+      powertrain,
+      profile,
+      consumption,
+      energyPrice,
+      useInternalOpexEstimate,
+      manualMaintenanceAnnual: el("manualMaintenanceAnnual")?.value,
+      manualTyresAnnual: el("manualTyresAnnual")?.value,
+      manualTaxesAnnual: el("manualTaxesAnnual")?.value,
+      insuranceUserAnnual,
+    });
   } else {
     const monthlyRent = nonNegative(el("monthlyRent")?.value);
-    const initialPayment = nonNegative(el("initialPayment")?.value);
-    const contractMonths = toNumber(el("contractMonths")?.value);
-    const annualIncludedKm = nonNegative(el("annualIncludedKm")?.value);
-    const excessMileageCostPerKm = nonNegative(el("excessMileageCost")?.value);
+    const rentingInitialPayment = nonNegative(el("rentingInitialPayment")?.value);
+    const contractAnnualKm = nonNegative(el("contractAnnualKm")?.value);
+    const rentIncludesMaintenance = el("rentIncludesMaintenance")?.checked ?? false;
+    const rentIncludesTyres = el("rentIncludesTyres")?.checked ?? false;
+    const rentIncludesTaxes = el("rentIncludesTaxes")?.checked ?? false;
+    const rentIncludesInsurance = el("rentIncludesInsurance")?.checked ?? false;
+    const insuranceUserAnnual = nonNegative(el("annualInsuranceRenting")?.value);
+    const excessCostPerKmUser = nonNegative(el("excessCostPerKm")?.value);
+    const excessKmRaw = el("excessKmPeriod")?.value;
+    const excessKmPeriodProvided = excessKmRaw !== "" && excessKmRaw !== undefined && excessKmRaw !== null;
+    const excessKmPeriodUser = excessKmPeriodProvided ? nonNegative(excessKmRaw) : 0;
+    const endContractCosts = nonNegative(el("endContractCosts")?.value);
 
-    addValidationError(errors, contractMonths <= 0, currentLang === "en" ? "contract duration > 0 months" : "duração do contrato > 0 meses");
+    addValidationError(errors, monthlyRent <= 0, currentLang === "en" ? "monthly payment > 0" : "renda mensal > 0");
 
-    const includedKmTotal = annualIncludedKm * (Math.max(contractMonths, 0) / 12);
-    const excessKm = Math.max(0, totalKm - includedKmTotal);
-    excessKmCost = excessKm * excessMileageCostPerKm;
-
-    baseCost = monthlyRent * Math.max(contractMonths, 0) + initialPayment;
-    const maintenanceExtra = el("maintenanceIncluded")?.value === "yes" ? 0 : maintenanceTotal;
-    const tyresExtra = el("tyresIncluded")?.value === "yes" ? 0 : tyresTotal;
-    const insuranceExtra = el("insuranceIncluded")?.value === "yes" ? 0 : insuranceTotal;
-    const taxesExtra = el("taxesIncluded")?.value === "yes" ? 0 : taxesTotal;
-
-    tcoTotal =
-      baseCost +
-      excessKmCost +
-      energyCost +
-      maintenanceExtra +
-      tyresExtra +
-      insuranceExtra +
-      taxesExtra +
-      downtimeTotal;
+    result = calculateRentingTCO({
+      monthlyRent,
+      months: totalMonths,
+      rentingInitialPayment,
+      kmPerYear,
+      years,
+      contractAnnualKm,
+      powertrain,
+      profile,
+      consumption,
+      energyPrice,
+      rentIncludesMaintenance,
+      rentIncludesTyres,
+      rentIncludesTaxes,
+      rentIncludesInsurance,
+      insuranceUserAnnual,
+      excessCostPerKmUser,
+      excessKmPeriodUser,
+      excessKmPeriodProvided,
+      endContractCosts,
+    });
   }
 
   if (errors.length > 0 || totalMonths <= 0 || totalKm <= 0) {
-    addValidationError(errors, totalMonths <= 0, currentLang === "en" ? "analysis period > 0 months" : "período de análise > 0 meses");
+    addValidationError(errors, totalMonths <= 0, currentLang === "en" ? "analysis period > 0 months" : "período > 0 meses");
     addValidationError(errors, totalKm <= 0, currentLang === "en" ? "total mileage > 0" : "quilometragem total > 0");
     setFeedback(t.invalid + errors.join(", "));
     resultsPanel?.classList.add("is-hidden");
     return;
   }
 
+  const tcoTotal = result.tcoTotal;
   const monthlyAverageCost = tcoTotal / totalMonths;
   const costPerKm = tcoTotal / totalKm;
 
@@ -340,25 +615,58 @@ form?.addEventListener("submit", (event) => {
   el("resultFiscal").textContent = getIndicativeFiscalReading(powertrain);
   el("resultRecommendation").textContent = getRecommendation(costPerKm);
 
-  setBreakdownLine("resultBreakdownBase", model === "purchase" ? t.purchaseBase : t.rentingBase, baseCost);
-  setBreakdownLine("resultBreakdownEnergy", t.energy, energyCost);
-  setBreakdownLine("resultBreakdownMaintenance", t.maintenance, maintenanceTotal);
-  setBreakdownLine("resultBreakdownTyres", t.tyres, tyresTotal);
-  setBreakdownLine("resultBreakdownInsurance", t.insurance, insuranceTotal);
-  setBreakdownLine("resultBreakdownTaxes", t.taxes, taxesTotal);
-  setBreakdownLine("resultBreakdownExcess", t.excess, excessKmCost);
-  const downtimeNode = el("resultBreakdownDowntime");
-  if (downtimeNode) {
-    downtimeNode.textContent = `${t.downtime}: ${formatCurrency(downtimeTotal)} (${t.downtimeNote})`;
+  const residualWrap = el("resultResidualWrap");
+
+  if (model === "purchase") {
+    const baseLabel = t.purchaseBase;
+    const baseAmount = result.netAcquisition + result.initialCash;
+    setBreakdownLine("resultBreakdownBase", baseLabel, baseAmount);
+    residualWrap?.classList.remove("is-hidden");
+    const resLab =
+      currentLang === "en" ? "Estimated residual value" : "Valor residual estimado";
+    const resNode = el("resultResidualEstimated");
+    if (resNode && typeof result.residualEstimated === "number") {
+      resNode.textContent = `${resLab}: ${formatCurrency(result.residualEstimated)}`;
+    }
+  } else {
+    const baseAmount = result.rentPaymentsTotal + result.initialCash;
+    setBreakdownLine("resultBreakdownBase", t.rentingBase, baseAmount);
+    residualWrap?.classList.add("is-hidden");
   }
+
+  setBreakdownLine("resultBreakdownEnergy", t.energy, result.energyTotal);
+
+  let maintSuffix = "";
+  if (model === "purchase" && result.usedInternalMaintenance) maintSuffix = ` ${t.maintEst}`;
+  if (model === "renting" && result.rentIncludesMaintenance) maintSuffix = ` ${t.inclRent}`;
+  setBreakdownLine("resultBreakdownMaintenance", t.maintenance, result.maintenanceTotal, maintSuffix);
+
+  let tyresSuffix = "";
+  if (model === "purchase" && result.usedInternalTyres) tyresSuffix = ` ${t.tyresEst}`;
+  if (model === "renting" && result.rentIncludesTyres) tyresSuffix = ` ${t.inclRent}`;
+  setBreakdownLine("resultBreakdownTyres", t.tyres, result.tyresTotal, tyresSuffix);
+
+  let taxSuffix = "";
+  if (model === "purchase" && result.usedInternalTaxes) taxSuffix = ` ${t.taxesEst}`;
+  if (model === "renting" && result.rentIncludesTaxes) taxSuffix = ` ${t.inclRent}`;
+  setBreakdownLine("resultBreakdownTaxes", t.taxes, result.taxesTotal, taxSuffix);
+
+  let insSuffix = "";
+  if (model === "purchase" && result.usedInternalInsurance) insSuffix = ` ${t.insEst}`;
+  if (model === "renting" && result.rentIncludesInsurance) insSuffix = ` ${t.inclRent}`;
+  setBreakdownLine("resultBreakdownInsurance", t.insurance, result.insuranceTotal, insSuffix);
+
+  setBreakdownLine("resultBreakdownExcess", t.excess, model === "purchase" ? 0 : result.excessKmCost);
+
+  const otherAmount = model === "purchase" ? 0 : result.endContractCost;
+  setBreakdownLine("resultBreakdownOther", t.other, otherAmount);
 
   setFeedback(t.defaultHint);
   resultsPanel?.classList.remove("is-hidden");
 });
 
 toggleAcquisitionFields();
-toggleFinancingFields();
-toggleMaintenanceFields();
-toggleTyresFields();
+toggleInternalOpexFields();
+toggleRentingInsuranceField();
 updateDynamicPlaceholders();
 updateSelectOptions();
