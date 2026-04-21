@@ -1036,13 +1036,14 @@ body {
 
 /* HERO */
 .hero {
-  min-height: 82svh;
+  min-height: 75svh;
 }
 
 .hero-grid {
   grid-template-columns: minmax(0, 640px) minmax(240px, 300px);
   gap: 36px;
-  padding: 104px 0 58px;
+  padding: 92px 0 30px;
+  align-items: end;
 }
 
 .hero-copy {
@@ -1085,6 +1086,11 @@ body {
   line-height: 1.65;
 }
 
+.hero-aside {
+  align-self: center;
+  transform: translateY(-10px);
+}
+
 /* BOTÕES MAIS PREMIUM */
 .btn-primary {
   background: linear-gradient(180deg, #1a46a4 0%, #163b8a 100%);
@@ -1114,6 +1120,99 @@ body {
   max-width: 670px;
   font-size: 1.02rem;
   line-height: 1.75;
+}
+
+/* Local fix: benefits list alignment in PT intro section */
+.simulator-benefits-section {
+  padding-top: 34px !important;
+  padding-bottom: 14px !important;
+}
+
+.simulator-benefits-intro {
+  max-width: 760px;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 32px 38px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(17, 18, 20, 0.055);
+  box-shadow: 0 9px 22px rgba(11, 16, 32, 0.032);
+}
+
+.simulator-benefits-intro h2 {
+  text-align: left;
+  margin: 0;
+  font-size: clamp(1.82rem, 2.45vw, 2.42rem);
+  letter-spacing: -0.038em;
+  line-height: 1.1;
+}
+
+.simulator-benefits-intro ul {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.simulator-benefits-intro li {
+  position: relative;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.simulator-benefits-intro li + li {
+  margin-top: 10px;
+}
+
+.simulator-benefits-intro li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.74em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(21, 62, 159, 0.55);
+  transform: translateY(-50%);
+}
+
+.simulator-benefits-section + .simulator-section {
+  padding-top: 6px;
+}
+
+@media (max-width: 768px) {
+  .simulator-benefits-section {
+    padding-top: 30px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .simulator-benefits-intro {
+    padding: 22px 20px;
+    border-radius: 20px;
+  }
+
+  .simulator-benefits-intro h2 {
+    font-size: clamp(1.48rem, 5vw, 1.9rem);
+    line-height: 1.14;
+  }
+
+  .simulator-benefits-intro li {
+    font-size: 0.96rem;
+    line-height: 1.64;
+    padding-left: 18px;
+  }
+
+  .simulator-benefits-intro li + li {
+    margin-top: 10px;
+  }
+
+  .simulator-benefits-section + .simulator-section {
+    padding-top: 6px;
+  }
 }
 
 /* SIMULADOR MAIS SÓLIDO */
@@ -1291,17 +1390,31 @@ body {
 
 .hero-copy p {
   max-width: 560px;
-  margin-bottom: 34px;
+  margin-bottom: 22px;
 }
 
-.hero-copy p.hero-positioning {
+.hero-copy .hero-positioning {
   max-width: 560px;
-  margin: -8px 0 26px;
+  margin: 8px 0 10px;
   font-size: 0.88rem;
   line-height: 1.55;
   letter-spacing: -0.01em;
   color: rgba(255, 255, 255, 0.78);
   opacity: 0.85;
+}
+
+.hero-copy .hero-actions {
+  margin-top: 8px;
+}
+
+.hero-copy ul.hero-positioning {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 4px;
+}
+
+.hero-copy ul.hero-positioning li + li {
+  margin-top: 6px;
 }
 
 /* CONTACT SECTION RESTORE */
@@ -1692,8 +1805,8 @@ footer .footer-links-minimal a:hover {
 
   .hero-grid {
     gap: min(32px, 4vw);
-    padding-top: min(108px, 14vw + 48px);
-    padding-bottom: min(72px, 10vw + 32px);
+    padding-top: min(96px, 12vw + 40px);
+    padding-bottom: min(44px, 7vw + 18px);
   }
 
   .hero-copy h1 {
@@ -1708,6 +1821,10 @@ footer .footer-links-minimal a:hover {
   .hero-panel {
     max-width: min(300px, 100%);
     padding: 22px 20px;
+  }
+
+  .hero-aside {
+    transform: translateY(-8px);
   }
 
   .simulator-section {
@@ -1751,6 +1868,15 @@ footer .footer-links-minimal a:hover {
     width: min(var(--container), calc(100% - 28px));
   }
 
+  .site-header {
+    backdrop-filter: blur(14px);
+  }
+
+  .header-inner {
+    min-height: 72px;
+    gap: 10px;
+  }
+
   .brand {
     gap: 10px;
     min-width: 0;
@@ -1761,13 +1887,13 @@ footer .footer-links-minimal a:hover {
   }
 
   .hero {
-    min-height: min(88svh, 820px);
+    min-height: min(80svh, 760px);
   }
 
   .hero-grid {
     gap: 22px;
-    padding-top: min(100px, 18vw + 40px);
-    padding-bottom: 52px;
+    padding-top: min(92px, 15vw + 34px);
+    padding-bottom: 30px;
   }
 
   .hero-copy {
@@ -1783,11 +1909,17 @@ footer .footer-links-minimal a:hover {
 
   .hero-copy p {
     margin-bottom: 22px;
+    line-height: 1.68;
   }
 
-  .hero-copy p.hero-positioning {
-    margin: -4px 0 22px;
+  .hero-copy .hero-positioning {
+    margin: 8px 0 10px;
     font-size: 0.86rem;
+    line-height: 1.58;
+  }
+
+  .hero-copy ul.hero-positioning li {
+    line-height: 1.55;
   }
 
   .hero-panel {
@@ -1804,6 +1936,11 @@ footer .footer-links-minimal a:hover {
     width: 100%;
     max-width: 100%;
     justify-content: center;
+    min-height: 54px;
+  }
+
+  .hero-aside {
+    transform: none;
   }
 
   .intro,
@@ -1815,6 +1952,62 @@ footer .footer-links-minimal a:hover {
 
   .contact-section {
     padding-bottom: 72px;
+  }
+
+  .simulator-benefits-intro {
+    max-width: 100%;
+  }
+
+  .simulator-benefits-intro ul {
+    margin-top: 16px;
+  }
+
+  .simulator-benefits-intro li {
+    line-height: 1.62;
+  }
+
+  .simulator-main {
+    padding: 24px 18px 22px;
+  }
+
+  .simulator-heading p {
+    line-height: 1.65;
+  }
+
+  .form-grid,
+  .fleet-groups,
+  .results-grid {
+    gap: 14px;
+  }
+
+  .field {
+    gap: 8px;
+  }
+
+  .field input,
+  .field select {
+    min-height: 56px;
+  }
+
+  .simulator-footer {
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .result-box {
+    padding: 16px;
+  }
+
+  .result-box strong {
+    line-height: 1.25;
+  }
+
+  .lang-toggle a.lang-btn {
+    min-height: 34px;
+    min-width: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .contact-form {
@@ -1898,6 +2091,10 @@ footer .footer-links-minimal a:hover {
     width: min(var(--container), calc(100% - 24px));
   }
 
+  .header-inner {
+    min-height: 68px;
+  }
+
   .lang-toggle {
     font-size: 0.74rem;
   }
@@ -1920,6 +2117,19 @@ footer .footer-links-minimal a:hover {
     min-height: 52px;
     padding: 14px 20px;
     font-size: 0.95rem;
+  }
+
+  .hero-copy ul.hero-positioning li + li {
+    margin-top: 5px;
+  }
+
+  .simulator-main {
+    padding: 22px 16px 20px;
+  }
+
+  .field input,
+  .field select {
+    min-height: 54px;
   }
 
   .footer-links-minimal {
