@@ -166,9 +166,8 @@
                     <select id="powertrainType" name="powertrainType">
                       <option value="" data-label-pt="Selecionar" data-label-en="Select">Selecionar</option>
                       <option value="combustion" data-label-pt="Combustão" data-label-en="Combustion">Combustão</option>
-                      <option value="gpl" data-label-pt="GPL" data-label-en="GPL">GPL</option>
-                      <option value="phev" data-label-pt="Híbrida plug-in (PHEV)" data-label-en="Plug-in hybrid (PHEV)">Híbrida plug-in (PHEV)</option>
-                      <option value="bev" data-label-pt="Elétrica (BEV)" data-label-en="Electric (BEV)">Elétrica (BEV)</option>
+                      <option value="hybrid" data-label-pt="Híbrido" data-label-en="Hybrid">Híbrido</option>
+                      <option value="electric" data-label-pt="Elétrico" data-label-en="Electric">Elétrico</option>
                     </select>
                   </div>
 
@@ -222,30 +221,146 @@
                 <div class="fleet-groups">
                   <article class="fleet-group">
                     <div class="fleet-group-grid">
+                      <div class="field field-wide">
+                        <label for="consumptionValue">Consumo (L/100 km ou kWh/100 km)</label>
+                        <input id="consumptionValue" name="consumptionValue" type="number" min="0" step="0.01" placeholder="Ex: 6.2" data-placeholder-pt="Ex: 6.2" data-placeholder-en="E.g.: 6.2" />
+                      </div>
+
+                      <div class="field field-wide">
+                        <label for="energyPrice">Preço da energia (€/L ou €/kWh)</label>
+                        <input id="energyPrice" name="energyPrice" type="number" min="0" step="0.01" placeholder="Ex: 1.75" data-placeholder-pt="Ex: 1.75" data-placeholder-en="E.g.: 1.75" />
+                      </div>
+
                       <div class="field purchase-field">
-                        <label for="valueCombustion">Valor por viatura (€)</label>
-                        <input
-                          id="valueCombustion"
-                          name="valueCombustion"
-                          type="number"
-                          min="0"
-                          placeholder="Ex: 32000"
-                          data-placeholder-pt="Ex: 32000"
-                          data-placeholder-en="E.g.: 32000"
-                        />
+                        <label for="purchasePrice">Preço de compra da viatura (€)</label>
+                        <input id="purchasePrice" name="purchasePrice" type="number" min="0" placeholder="Ex: 32000" data-placeholder-pt="Ex: 32000" data-placeholder-en="E.g.: 32000" />
+                      </div>
+
+                      <div class="field purchase-field">
+                        <label for="downPayment">Entrada inicial (€)</label>
+                        <input id="downPayment" name="downPayment" type="number" min="0" value="0" />
+                      </div>
+
+                      <div class="field purchase-field">
+                        <label for="financingEnabled">Financiamento</label>
+                        <select id="financingEnabled" name="financingEnabled">
+                          <option value="no">Não</option>
+                          <option value="yes">Sim</option>
+                        </select>
+                      </div>
+
+                      <div class="field purchase-field financing-field is-hidden">
+                        <label for="annualInterestRate">Taxa de juro anual (%)</label>
+                        <input id="annualInterestRate" name="annualInterestRate" type="number" min="0" step="0.01" placeholder="Ex: 6.5" data-placeholder-pt="Ex: 6.5" data-placeholder-en="E.g.: 6.5" />
+                      </div>
+
+                      <div class="field purchase-field financing-field is-hidden">
+                        <label for="financingMonths">Prazo do financiamento (meses)</label>
+                        <input id="financingMonths" name="financingMonths" type="number" min="0" step="1" placeholder="Ex: 60" data-placeholder-pt="Ex: 60" data-placeholder-en="E.g.: 60" />
+                      </div>
+
+                      <div class="field purchase-field">
+                        <label for="residualValue">Valor residual no fim do período (€)</label>
+                        <input id="residualValue" name="residualValue" type="number" min="0" value="0" />
                       </div>
 
                       <div class="field renting-field is-hidden">
-                        <label for="rentCombustion">Renda mensal (€)</label>
-                        <input
-                          id="rentCombustion"
-                          name="rentCombustion"
-                          type="number"
-                          min="0"
-                          placeholder="Ex: 640"
-                          data-placeholder-pt="Ex: 640"
-                          data-placeholder-en="E.g.: 640"
-                        />
+                        <label for="monthlyRent">Renda mensal (€)</label>
+                        <input id="monthlyRent" name="monthlyRent" type="number" min="0" placeholder="Ex: 640" data-placeholder-pt="Ex: 640" data-placeholder-en="E.g.: 640" />
+                      </div>
+
+                      <div class="field renting-field is-hidden">
+                        <label for="initialPayment">Entrada inicial (€)</label>
+                        <input id="initialPayment" name="initialPayment" type="number" min="0" value="0" />
+                      </div>
+
+                      <div class="field renting-field is-hidden">
+                        <label for="contractMonths">Duração do contrato (meses)</label>
+                        <input id="contractMonths" name="contractMonths" type="number" min="1" placeholder="Ex: 48" data-placeholder-pt="Ex: 48" data-placeholder-en="E.g.: 48" />
+                      </div>
+
+                      <div class="field renting-field is-hidden">
+                        <label for="annualIncludedKm">Km incluídos por ano</label>
+                        <input id="annualIncludedKm" name="annualIncludedKm" type="number" min="0" placeholder="Ex: 20000" data-placeholder-pt="Ex: 20000" data-placeholder-en="E.g.: 20000" />
+                      </div>
+
+                      <div class="field renting-field is-hidden">
+                        <label for="excessMileageCost">Excesso por km (€)</label>
+                        <input id="excessMileageCost" name="excessMileageCost" type="number" min="0" step="0.01" placeholder="Ex: 0.08" data-placeholder-pt="Ex: 0.08" data-placeholder-en="E.g.: 0.08" />
+                      </div>
+
+                      <div class="field renting-field is-hidden">
+                        <label for="maintenanceIncluded">Manutenção incluída</label>
+                        <select id="maintenanceIncluded" name="maintenanceIncluded">
+                          <option value="yes">Sim</option>
+                          <option value="no">Não</option>
+                        </select>
+                      </div>
+
+                      <div class="field renting-field is-hidden">
+                        <label for="tyresIncluded">Pneus incluídos</label>
+                        <select id="tyresIncluded" name="tyresIncluded">
+                          <option value="yes">Sim</option>
+                          <option value="no">Não</option>
+                        </select>
+                      </div>
+
+                      <div class="field renting-field is-hidden">
+                        <label for="insuranceIncluded">Seguro incluído</label>
+                        <select id="insuranceIncluded" name="insuranceIncluded">
+                          <option value="yes">Sim</option>
+                          <option value="no">Não</option>
+                        </select>
+                      </div>
+
+                      <div class="field renting-field is-hidden">
+                        <label for="taxesIncluded">Impostos/taxas incluídos</label>
+                        <select id="taxesIncluded" name="taxesIncluded">
+                          <option value="yes">Sim</option>
+                          <option value="no">Não</option>
+                        </select>
+                      </div>
+                    </div>
+                  </article>
+                  <article class="fleet-group">
+                    <div class="fleet-group-grid">
+                      <div class="field">
+                        <label for="annualInsurance">Seguro anual (€)</label>
+                        <input id="annualInsurance" name="annualInsurance" type="number" min="0" value="0" />
+                      </div>
+                      <div class="field">
+                        <label for="annualTaxes">Impostos/taxas anuais (€)</label>
+                        <input id="annualTaxes" name="annualTaxes" type="number" min="0" value="0" />
+                      </div>
+                      <div class="field">
+                        <label for="maintenanceMode">Manutenção</label>
+                        <select id="maintenanceMode" name="maintenanceMode">
+                          <option value="annual">Valor anual</option>
+                          <option value="per_km">Valor por km</option>
+                        </select>
+                      </div>
+                      <div class="field maintenance-annual-field">
+                        <label for="maintenanceAnnual">Manutenção anual (€)</label>
+                        <input id="maintenanceAnnual" name="maintenanceAnnual" type="number" min="0" value="0" />
+                      </div>
+                      <div class="field maintenance-per-km-field is-hidden">
+                        <label for="maintenancePerKm">Manutenção por km (€)</label>
+                        <input id="maintenancePerKm" name="maintenancePerKm" type="number" min="0" step="0.001" value="0" />
+                      </div>
+                      <div class="field">
+                        <label for="tyresMode">Pneus</label>
+                        <select id="tyresMode" name="tyresMode">
+                          <option value="annual">Valor anual</option>
+                          <option value="per_km">Valor por km</option>
+                        </select>
+                      </div>
+                      <div class="field tyres-annual-field">
+                        <label for="tyresAnnual">Pneus anual (€)</label>
+                        <input id="tyresAnnual" name="tyresAnnual" type="number" min="0" value="0" />
+                      </div>
+                      <div class="field tyres-per-km-field is-hidden">
+                        <label for="tyresPerKm">Pneus por km (€)</label>
+                        <input id="tyresPerKm" name="tyresPerKm" type="number" min="0" step="0.001" value="0" />
                       </div>
                     </div>
                   </article>
@@ -253,19 +368,19 @@
 
                 <div class="simulator-footer">
                   <button type="submit" class="btn btn-primary btn-large">Ver estimativa</button>
-                  <small>Simulação indicativa para uma viatura, baseada em pressupostos médios de mercado.</small>
+                  <small id="simulatorFeedback">Simulação indicativa para uma viatura, baseada em pressupostos médios de mercado.</small>
                 </div>
               </form>
 
               <div class="results-panel is-hidden" id="resultsPanel">
                 <div class="results-grid">
                   <div class="result-box">
-                    <span>Custo anual estimado</span>
-                    <strong id="resultAnnualCost">—</strong>
+                    <span>TCO total</span>
+                    <strong id="resultTotalPeriod">—</strong>
                   </div>
                   <div class="result-box">
-                    <span>Custo total no período</span>
-                    <strong id="resultTotalPeriod">—</strong>
+                    <span>Custo médio mensal</span>
+                    <strong id="resultAnnualCost">—</strong>
                   </div>
                   <div class="result-box">
                     <span>Custo médio por km</span>
@@ -278,6 +393,20 @@
                   <div class="result-box result-box-wide">
                     <span>Recomendação</span>
                     <strong id="resultRecommendation">—</strong>
+                  </div>
+                  <div class="result-box result-box-wide">
+                    <span>Desagregação de custos</span>
+                    <small id="resultBreakdownBase">Aquisição/depreciação: —</small>
+                    <small id="resultBreakdownEnergy">Energia: —</small>
+                    <small id="resultBreakdownMaintenance">Manutenção: —</small>
+                    <small id="resultBreakdownTyres">Pneus: —</small>
+                    <small id="resultBreakdownInsurance">Seguro: —</small>
+                    <small id="resultBreakdownTaxes">Impostos/taxas: —</small>
+                    <small id="resultBreakdownExcess">Excesso de km: —</small>
+                    <small id="resultBreakdownDowntime">Indisponibilidade: —</small>
+                  </div>
+                  <div class="result-box result-box-wide">
+                    <small id="resultDisclaimer">Simulação indicativa para apoio à decisão. Os resultados dependem dos dados inseridos e das condições reais de aquisição, utilização, fiscalidade e contrato.</small>
                   </div>
                 </div>
               </div>

@@ -4,18 +4,25 @@
  */
 const currentLang = /^\/en(\/|$)/.test(location.pathname) ? "en" : "pt";
 
-const acquisitionModel = document.getElementById("acquisitionModel");
-const resultsPanel = document.getElementById("resultsPanel");
-const powertrainType = document.getElementById("powertrainType");
-const usageProfile = document.getElementById("usageProfile");
-const annualKm = document.getElementById("annualKm");
-const analysisYears = document.getElementById("analysisYears");
-const valueVehicle = document.getElementById("valueCombustion");
-const rentVehicle = document.getElementById("rentCombustion");
+function el(id) {
+  return document.getElementById(id);
+}
+
+const form = el("tcoForm");
+const acquisitionModel = el("acquisitionModel");
+const financingEnabled = el("financingEnabled");
+const maintenanceMode = el("maintenanceMode");
+const tyresMode = el("tyresMode");
+const resultsPanel = el("resultsPanel");
+const feedback = el("simulatorFeedback");
 
 function toNumber(value) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function nonNegative(value) {
+  return Math.max(0, toNumber(value));
 }
 
 function formatCurrency(value, fractionDigits = 0) {
@@ -31,15 +38,13 @@ function formatCurrency(value, fractionDigits = 0) {
 function getIndicativeFiscalReading(motorization) {
   const pt = {
     combustion: "Enquadramento fiscal tendencialmente mais pressionado.",
-    gpl: "Leitura fiscal intermédia, dependente da política de frota.",
-    phev: "Pode beneficiar de otimização fiscal com utilização adequada.",
-    bev: "Tende a beneficiar de enquadramento fiscal mais favorável.",
+    hybrid: "Leitura fiscal intermédia, dependente da política de frota.",
+    electric: "Tende a beneficiar de enquadramento fiscal mais favorável.",
   };
   const en = {
     combustion: "Tax position tends to be more demanding.",
-    gpl: "Intermediate tax profile, depending on fleet policy.",
-    phev: "May benefit from tax optimisation with appropriate usage.",
-    bev: "Tends to benefit from a more favourable tax position.",
+    hybrid: "Intermediate tax profile, depending on fleet policy.",
+    electric: "Tends to benefit from a more favourable tax position.",
   };
   const map = currentLang === "en" ? en : pt;
   return (
@@ -70,8 +75,8 @@ function getRecommendation(costPerKm) {
   }
 
   return currentLang === "en"
-    ? "Profile with optimisation potential in acquisition, usage and powertrain."
-    : "Perfil com potencial de otimização em aquisição, uso e motorização.";
+    ? "Profile with optimisation potential in acquisition, usage, and powertrain."
+    : "Perfil com potencial de otimização em aquisição, utilização e motorização.";
 }
 
 function updateDynamicPlaceholders() {
@@ -91,6 +96,7 @@ function updateSelectOptions() {
 }
 
 function toggleAcquisitionFields() {
+  if (!acquisitionModel) return;
   const isRenting = acquisitionModel.value === "renting";
 
   document.querySelectorAll(".purchase-field").forEach((el) => {
@@ -102,44 +108,257 @@ function toggleAcquisitionFields() {
   });
 }
 
+function toggleFinancingFields() {
+  const isFinanced = financingEnabled?.value === "yes";
+  document.querySelectorAll(".financing-field").forEach((field) => {
+    field.classList.toggle("is-hidden", !isFinanced);
+  });
+}
+
+function toggleMaintenanceFields() {
+  const perKm = maintenanceMode?.value === "per_km";
+  document.querySelectorAll(".maintenance-annual-field").forEach((field) => {
+    field.classList.toggle("is-hidden", perKm);
+  });
+  document.querySelectorAll(".maintenance-per-km-field").forEach((field) => {
+    field.classList.toggle("is-hidden", !perKm);
+  });
+}
+
+function toggleTyresFields() {
+  const perKm = tyresMode?.value === "per_km";
+  document.querySelectorAll(".tyres-annual-field").forEach((field) => {
+    field.classList.toggle("is-hidden", perKm);
+  });
+  document.querySelectorAll(".tyres-per-km-field").forEach((field) => {
+    field.classList.toggle("is-hidden", !perKm);
+  });
+}
+
+function setFeedback(message) {
+  if (feedback) {
+    feedback.textContent = message;
+  }
+}
+
+function addValidationError(errors, condition, message) {
+  if (condition) {
+    errors.push(message);
+  }
+}
+
+function getTexts() {
+  return currentLang === "en"
+    ? {
+        invalid: "Please review the highlighted inputs: ",
+        defaultHint: "Indicative single-vehicle simulation based on average market assumptions.",
+        purchaseBase: "Acquisition/depreciation",
+        rentingBase: "Renting base",
+        energy: "Energy",
+        maintenance: "Maintenance",
+        tyres: "Tyres",
+        insurance: "Insurance",
+        taxes: "Taxes/fees",
+        excess: "Excess mileage",
+        downtime: "Downtime cost",
+        downtimeNote: "Estimated based on operational averages",
+      }
+    : {
+        invalid: "Por favor valide os campos: ",
+        defaultHint: "Simulação indicativa para uma viatura, baseada em pressupostos médios de mercado.",
+        purchaseBase: "Aquisição/depreciação",
+        rentingBase: "Base de renting",
+        energy: "Energia",
+        maintenance: "Manutenção",
+        tyres: "Pneus",
+        insurance: "Seguro",
+        taxes: "Impostos/taxas",
+        excess: "Excesso de km",
+        downtime: "Custo de indisponibilidade",
+        downtimeNote: "Estimativa baseada em médias operacionais",
+      };
+}
+
+function setBreakdownLine(id, label, value) {
+  const node = el(id);
+  if (node) {
+    node.textContent = `${label}: ${formatCurrency(value)}`;
+  }
+}
+
+function estimateAnnualDowntimeCost(kmPerYear) {
+  if (kmPerYear > 0) {
+    return kmPerYear * 0.01;
+  }
+  return 4 * 120;
+}
+
 if (acquisitionModel) {
   acquisitionModel.addEventListener("change", toggleAcquisitionFields);
 }
 
-document.getElementById("tcoForm")?.addEventListener("submit", (event) => {
+if (financingEnabled) {
+  financingEnabled.addEventListener("change", toggleFinancingFields);
+}
+
+if (maintenanceMode) {
+  maintenanceMode.addEventListener("change", toggleMaintenanceFields);
+}
+
+if (tyresMode) {
+  tyresMode.addEventListener("change", toggleTyresFields);
+}
+
+form?.addEventListener("submit", (event) => {
   event.preventDefault();
-  const years = Math.max(1, toNumber(analysisYears?.value || 1));
-  const kmPerYear = Math.max(1, toNumber(annualKm?.value || 0));
+  const t = getTexts();
+
+  const model = acquisitionModel?.value || "purchase";
+  const powertrain = el("powertrainType")?.value || "";
+  const kmPerYear = toNumber(el("annualKm")?.value);
+  const years = toNumber(el("analysisYears")?.value);
+  const totalMonths = years * 12;
   const totalKm = years * kmPerYear;
-  const isRenting = acquisitionModel?.value === "renting";
-  const baseValue = isRenting ? toNumber(rentVehicle?.value || 0) * 12 : toNumber(valueVehicle?.value || 0);
+  const consumption = nonNegative(el("consumptionValue")?.value);
+  const energyPrice = nonNegative(el("energyPrice")?.value);
+  const energyCost = (totalKm / 100) * consumption * energyPrice;
 
-  const usageMultiplier = {
-    urbano: 1.05,
-    misto: 1,
-    estrada: 0.95,
-  }[usageProfile?.value || "misto"];
+  const maintenanceTotal =
+    (maintenanceMode?.value || "annual") === "per_km"
+      ? totalKm * nonNegative(el("maintenancePerKm")?.value)
+      : years * nonNegative(el("maintenanceAnnual")?.value);
 
-  const motorizationOpex = {
-    combustion: 4200,
-    gpl: 3600,
-    phev: 3300,
-    bev: 2800,
-  }[powertrainType?.value || "combustion"];
+  const tyresTotal =
+    (tyresMode?.value || "annual") === "per_km"
+      ? totalKm * nonNegative(el("tyresPerKm")?.value)
+      : years * nonNegative(el("tyresAnnual")?.value);
 
-  const annualCost = (isRenting ? baseValue : baseValue / years) + motorizationOpex * usageMultiplier;
-  const totalPeriodCost = annualCost * years;
-  const costPerKm = totalKm > 0 ? totalPeriodCost / totalKm : 0;
+  const insuranceTotal = years * nonNegative(el("annualInsurance")?.value);
+  const taxesTotal = years * nonNegative(el("annualTaxes")?.value);
+  const annualDowntimeCost = estimateAnnualDowntimeCost(kmPerYear);
+  const downtimeTotal = years * annualDowntimeCost;
 
-  document.getElementById("resultAnnualCost").textContent = formatCurrency(annualCost);
-  document.getElementById("resultTotalPeriod").textContent = formatCurrency(totalPeriodCost);
-  document.getElementById("resultCostPerKm").textContent = formatCurrency(costPerKm, 2);
-  document.getElementById("resultFiscal").textContent = getIndicativeFiscalReading(powertrainType?.value);
-  document.getElementById("resultRecommendation").textContent = getRecommendation(costPerKm);
+  const errors = [];
+  addValidationError(errors, !powertrain, currentLang === "en" ? "powertrain type" : "tipo de motorização");
+  addValidationError(errors, kmPerYear <= 0, currentLang === "en" ? "annual mileage > 0" : "quilometragem anual > 0");
+  addValidationError(errors, years <= 0, currentLang === "en" ? "analysis period > 0" : "período de análise > 0");
 
+  let tcoTotal = 0;
+  let baseCost = 0;
+  let excessKmCost = 0;
+
+  if (model === "purchase") {
+    const purchasePrice = nonNegative(el("purchasePrice")?.value);
+    const downPayment = nonNegative(el("downPayment")?.value);
+    const residualValue = nonNegative(el("residualValue")?.value);
+    const financedPrincipal = Math.max(0, purchasePrice - downPayment);
+    const financeOn = financingEnabled?.value === "yes";
+
+    addValidationError(
+      errors,
+      residualValue > purchasePrice,
+      currentLang === "en"
+        ? "residual value must be <= purchase price"
+        : "valor residual deve ser <= preço de compra"
+    );
+
+    let financingCost = 0;
+    if (financeOn) {
+      const annualRate = nonNegative(el("annualInterestRate")?.value);
+      const financingMonths = toNumber(el("financingMonths")?.value);
+      addValidationError(
+        errors,
+        financingMonths <= 0,
+        currentLang === "en" ? "financing term > 0 months" : "prazo de financiamento > 0 meses"
+      );
+
+      if (financingMonths > 0 && financedPrincipal > 0) {
+        const monthlyRate = annualRate / 12 / 100;
+        const monthlyPayment =
+          monthlyRate === 0
+            ? financedPrincipal / financingMonths
+            : (financedPrincipal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -financingMonths));
+        const totalPaidFinancing = monthlyPayment * financingMonths;
+        financingCost = Math.max(0, totalPaidFinancing - financedPrincipal);
+      }
+    }
+
+    const depreciation = Math.max(0, purchasePrice - residualValue);
+    baseCost = downPayment + financingCost + depreciation;
+    tcoTotal =
+      baseCost +
+      energyCost +
+      maintenanceTotal +
+      tyresTotal +
+      insuranceTotal +
+      taxesTotal +
+      downtimeTotal;
+  } else {
+    const monthlyRent = nonNegative(el("monthlyRent")?.value);
+    const initialPayment = nonNegative(el("initialPayment")?.value);
+    const contractMonths = toNumber(el("contractMonths")?.value);
+    const annualIncludedKm = nonNegative(el("annualIncludedKm")?.value);
+    const excessMileageCostPerKm = nonNegative(el("excessMileageCost")?.value);
+
+    addValidationError(errors, contractMonths <= 0, currentLang === "en" ? "contract duration > 0 months" : "duração do contrato > 0 meses");
+
+    const includedKmTotal = annualIncludedKm * (Math.max(contractMonths, 0) / 12);
+    const excessKm = Math.max(0, totalKm - includedKmTotal);
+    excessKmCost = excessKm * excessMileageCostPerKm;
+
+    baseCost = monthlyRent * Math.max(contractMonths, 0) + initialPayment;
+    const maintenanceExtra = el("maintenanceIncluded")?.value === "yes" ? 0 : maintenanceTotal;
+    const tyresExtra = el("tyresIncluded")?.value === "yes" ? 0 : tyresTotal;
+    const insuranceExtra = el("insuranceIncluded")?.value === "yes" ? 0 : insuranceTotal;
+    const taxesExtra = el("taxesIncluded")?.value === "yes" ? 0 : taxesTotal;
+
+    tcoTotal =
+      baseCost +
+      excessKmCost +
+      energyCost +
+      maintenanceExtra +
+      tyresExtra +
+      insuranceExtra +
+      taxesExtra +
+      downtimeTotal;
+  }
+
+  if (errors.length > 0 || totalMonths <= 0 || totalKm <= 0) {
+    addValidationError(errors, totalMonths <= 0, currentLang === "en" ? "analysis period > 0 months" : "período de análise > 0 meses");
+    addValidationError(errors, totalKm <= 0, currentLang === "en" ? "total mileage > 0" : "quilometragem total > 0");
+    setFeedback(t.invalid + errors.join(", "));
+    resultsPanel?.classList.add("is-hidden");
+    return;
+  }
+
+  const monthlyAverageCost = tcoTotal / totalMonths;
+  const costPerKm = tcoTotal / totalKm;
+
+  el("resultTotalPeriod").textContent = formatCurrency(tcoTotal);
+  el("resultAnnualCost").textContent = formatCurrency(monthlyAverageCost);
+  el("resultCostPerKm").textContent = formatCurrency(costPerKm, 2);
+  el("resultFiscal").textContent = getIndicativeFiscalReading(powertrain);
+  el("resultRecommendation").textContent = getRecommendation(costPerKm);
+
+  setBreakdownLine("resultBreakdownBase", model === "purchase" ? t.purchaseBase : t.rentingBase, baseCost);
+  setBreakdownLine("resultBreakdownEnergy", t.energy, energyCost);
+  setBreakdownLine("resultBreakdownMaintenance", t.maintenance, maintenanceTotal);
+  setBreakdownLine("resultBreakdownTyres", t.tyres, tyresTotal);
+  setBreakdownLine("resultBreakdownInsurance", t.insurance, insuranceTotal);
+  setBreakdownLine("resultBreakdownTaxes", t.taxes, taxesTotal);
+  setBreakdownLine("resultBreakdownExcess", t.excess, excessKmCost);
+  const downtimeNode = el("resultBreakdownDowntime");
+  if (downtimeNode) {
+    downtimeNode.textContent = `${t.downtime}: ${formatCurrency(downtimeTotal)} (${t.downtimeNote})`;
+  }
+
+  setFeedback(t.defaultHint);
   resultsPanel?.classList.remove("is-hidden");
 });
 
 toggleAcquisitionFields();
+toggleFinancingFields();
+toggleMaintenanceFields();
+toggleTyresFields();
 updateDynamicPlaceholders();
 updateSelectOptions();
