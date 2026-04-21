@@ -1865,7 +1865,7 @@ footer .footer-links-minimal a:hover {
 
 @media (max-width: 768px) {
   .container {
-    width: min(var(--container), calc(100% - 40px));
+    width: min(var(--container), calc(100% - 44px));
   }
 
   .site-header {
@@ -1972,6 +1972,8 @@ footer .footer-links-minimal a:hover {
 
   .simulator-heading p {
     line-height: 1.56;
+    margin-top: 16px;
+    margin-bottom: 24px;
   }
 
   .form-grid,
@@ -2084,7 +2086,7 @@ footer .footer-links-minimal a:hover {
   .privacy-body p,
   .privacy-body li {
     font-size: 0.94rem;
-    line-height: 1.58;
+    line-height: 1.64;
     overflow-wrap: break-word;
     color: #6b7280;
   }
@@ -2127,7 +2129,7 @@ footer .footer-links-minimal a:hover {
   .simulator-heading,
   .contact-wrap,
   .privacy-wrap {
-    max-width: 640px;
+    max-width: 620px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -2143,19 +2145,22 @@ footer .footer-links-minimal a:hover {
   .privacy-body p,
   .privacy-body li {
     text-align: left;
-    max-width: 640px;
+    max-width: 620px;
     margin-left: auto;
     margin-right: auto;
-    line-height: 1.56;
+    line-height: 1.64;
     color: #6b7280;
   }
 
   .intro-wrap p {
-    margin-top: 16px;
+    margin-top: 18px;
+    margin-bottom: 0;
   }
 
-  .simulator-heading p {
-    margin-top: 14px;
+  .contact-intro,
+  .benefit-item p,
+  .privacy-body p {
+    margin-bottom: 16px;
   }
 
   .privacy-wrap,
@@ -2166,7 +2171,7 @@ footer .footer-links-minimal a:hover {
 
 @media (max-width: 480px) {
   .container {
-    width: min(var(--container), calc(100% - 44px));
+    width: min(var(--container), calc(100% - 40px));
   }
 
   .header-inner {
@@ -2215,6 +2220,20 @@ footer .footer-links-minimal a:hover {
   .simulator-section {
     padding-top: 48px !important;
     padding-bottom: 48px !important;
+  }
+
+  .intro-wrap,
+  .benefits-wrap,
+  .simulator-heading,
+  .contact-wrap,
+  .privacy-wrap,
+  .intro-wrap p,
+  .simulator-heading p,
+  .contact-intro,
+  .benefit-item p,
+  .privacy-body p,
+  .privacy-body li {
+    max-width: 620px;
   }
 
   .footer-links-minimal {
@@ -2334,5 +2353,217 @@ footer .footer-links-minimal a:hover {
   .simulator-benefits-intro:hover {
     transform: translateY(-1px);
     box-shadow: 0 12px 34px rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* ===== Unified Container System ===== */
+.container {
+  width: 100% !important;
+  max-width: 1100px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: 680px !important;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* Keep hero text aligned to container gutter, no extra offsets */
+.hero-copy {
+  padding-left: 0 !important;
+}
+
+@media (min-width: 1400px) {
+  .container,
+  .container-narrow {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .container,
+  .container-narrow {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+}
+
+/* Debug helper (do not keep active in production):
+   .container { outline: 1px solid red; }
+*/
+
+/* ===== Final Premium Consistency Pass ===== */
+:root {
+  --space-s: 16px;
+  --space-m: 24px;
+  --space-l: 40px;
+  --space-section: 80px;
+}
+
+/* Content width + alignment */
+.intro-wrap,
+.privacy-wrap,
+.simulator-heading,
+.contact-wrap {
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.benefits-wrap,
+.simulator-card {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.intro-wrap p,
+.simulator-heading p,
+.contact-intro,
+.benefit-item p,
+.privacy-body p,
+.privacy-body li {
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  line-height: 1.65;
+  color: #4b5563;
+}
+
+/* Vertical rhythm */
+.section-light {
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-section);
+}
+
+.intro-wrap p {
+  margin-top: var(--space-s);
+}
+
+.simulator-heading p {
+  margin-top: 14px;
+}
+
+.simulator-form {
+  margin-top: var(--space-m);
+}
+
+.results-panel {
+  margin-top: var(--space-m);
+  padding-top: var(--space-m);
+}
+
+/* Buttons */
+.btn-primary {
+  padding: 16px 28px;
+  border-radius: 999px;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+.btn-primary:hover {
+  filter: brightness(0.98);
+}
+
+/* Forms */
+.form-grid,
+.fleet-groups {
+  gap: 20px;
+}
+
+.field {
+  gap: 8px;
+}
+
+.field label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: rgba(16, 17, 20, 0.62);
+}
+
+.field input,
+.field select {
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Cards / blocks */
+.fleet-group,
+.result-box,
+.benefit-item,
+.simulator-benefits-intro {
+  padding: 24px;
+  border-radius: 16px;
+  background: #f9fafb;
+}
+
+.fleet-groups,
+.benefits-list,
+.results-grid {
+  gap: 18px;
+}
+
+/* Hero balance */
+.hero-copy {
+  max-width: 680px;
+}
+
+.hero-copy p {
+  max-width: 620px;
+}
+
+/* Consistent side padding */
+@media (max-width: 1024px) {
+  .container {
+    width: min(var(--container), calc(100% - 64px));
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: min(var(--container), calc(100% - 40px));
+  }
+
+  .section-light,
+  .simulator-section {
+    padding-top: 64px !important;
+    padding-bottom: 64px !important;
+  }
+
+  .intro-wrap,
+  .privacy-wrap,
+  .simulator-heading,
+  .contact-wrap,
+  .intro-wrap p,
+  .simulator-heading p,
+  .contact-intro,
+  .benefit-item p,
+  .privacy-body p,
+  .privacy-body li {
+    max-width: 680px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: min(var(--container), calc(100% - 40px));
+  }
+
+  .section-light,
+  .simulator-section {
+    padding-top: 56px !important;
+    padding-bottom: 56px !important;
   }
 }
