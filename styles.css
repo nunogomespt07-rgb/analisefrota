@@ -1865,7 +1865,7 @@ footer .footer-links-minimal a:hover {
 
 @media (max-width: 768px) {
   .container {
-    width: min(var(--container), calc(100% - 28px));
+    width: min(var(--container), calc(100% - 32px));
   }
 
   .site-header {
@@ -1909,17 +1909,17 @@ footer .footer-links-minimal a:hover {
 
   .hero-copy p {
     margin-bottom: 22px;
-    line-height: 1.68;
+    line-height: 1.58;
   }
 
   .hero-copy .hero-positioning {
     margin: 8px 0 10px;
     font-size: 0.86rem;
-    line-height: 1.58;
+    line-height: 1.5;
   }
 
   .hero-copy ul.hero-positioning li {
-    line-height: 1.55;
+    line-height: 1.5;
   }
 
   .hero-panel {
@@ -1936,7 +1936,7 @@ footer .footer-links-minimal a:hover {
     width: 100%;
     max-width: 100%;
     justify-content: center;
-    min-height: 54px;
+    min-height: 50px;
   }
 
   .hero-aside {
@@ -1946,8 +1946,8 @@ footer .footer-links-minimal a:hover {
   .intro,
   .benefits,
   .simulator-section {
-    padding-top: 60px !important;
-    padding-bottom: 60px !important;
+    padding-top: 56px !important;
+    padding-bottom: 56px !important;
   }
 
   .contact-section {
@@ -1971,22 +1971,36 @@ footer .footer-links-minimal a:hover {
   }
 
   .simulator-heading p {
-    line-height: 1.65;
+    line-height: 1.56;
   }
 
   .form-grid,
   .fleet-groups,
   .results-grid {
-    gap: 14px;
+    gap: 16px;
   }
 
   .field {
-    gap: 8px;
+    gap: 10px;
+  }
+
+  .field label {
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: rgba(16, 17, 20, 0.64);
   }
 
   .field input,
   .field select {
-    min-height: 56px;
+    min-height: 47px;
+    border-color: #e5e7eb;
+    padding: 0 14px;
+  }
+
+  .field input:focus,
+  .field select:focus {
+    border-color: rgba(37, 99, 235, 0.45);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
 
   .simulator-footer {
@@ -1994,8 +2008,29 @@ footer .footer-links-minimal a:hover {
     margin-top: 18px;
   }
 
+  .btn-primary {
+    padding: 12px 20px;
+    box-shadow:
+      0 4px 12px rgba(22, 59, 138, 0.14),
+      inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+
+  .btn-large {
+    min-height: 50px;
+    padding: 12px 20px;
+  }
+
+  .fleet-group {
+    border-radius: 16px;
+    background: #f9fafb;
+    box-shadow: 0 4px 12px rgba(11, 16, 32, 0.03);
+  }
+
   .result-box {
     padding: 16px;
+    border-radius: 16px;
+    background: #f9fafb;
+    box-shadow: 0 4px 12px rgba(11, 16, 32, 0.025);
   }
 
   .result-box strong {
@@ -2088,7 +2123,7 @@ footer .footer-links-minimal a:hover {
 
 @media (max-width: 480px) {
   .container {
-    width: min(var(--container), calc(100% - 24px));
+    width: min(var(--container), calc(100% - 28px));
   }
 
   .header-inner {
@@ -2114,8 +2149,8 @@ footer .footer-links-minimal a:hover {
   }
 
   .btn-large {
-    min-height: 52px;
-    padding: 14px 20px;
+    min-height: 48px;
+    padding: 11px 18px;
     font-size: 0.95rem;
   }
 
@@ -2129,7 +2164,7 @@ footer .footer-links-minimal a:hover {
 
   .field input,
   .field select {
-    min-height: 54px;
+    min-height: 46px;
   }
 
   .footer-links-minimal {
