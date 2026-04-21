@@ -194,13 +194,20 @@
                   <div class="simulator-heading simulator-heading--intro">
                     <div class="section-kicker">Indicative simulation</div>
                     <h2 class="simulator-intro-heading">Single-vehicle TCO simulation</h2>
-                    <p class="simulator-intro-lead">
-                      Enter your details for a consultative view of total cost for one vehicle over the selected period.
-                    </p>
+                    <div class="simulator-intro-lead-stack">
+                      <p class="simulator-intro-lead">
+                        Enter your details to estimate total cost over the analysis period you choose.
+                      </p>
+                      <p class="simulator-intro-lead simulator-intro-lead--secondary">
+                        The outcome is consultative — useful for comparing scenarios before deeper work.
+                      </p>
+                    </div>
                   </div>
                   <div class="simulator-intro-notes">
-                    <p class="simulator-form-hint simulator-form-hint--intro" data-lang="pt">Em Compra e Renting os campos adaptam‑se ao modelo escolhido. Na compra pode usar estimativas internas ou valores manuais para manutenção, pneus e impostos; no renting indique o que já está incluído na renda.</p>
-                    <p class="simulator-form-hint simulator-form-hint--intro" data-lang="en">Purchase and leasing show different fields. For purchase you can rely on internal estimates or enter annual maintenance, tyres, and taxes; for leasing, tick what is included in the monthly payment.</p>
+                    <p class="simulator-form-hint simulator-form-hint--intro" data-lang="pt">Em Compra e Renting os campos adaptam‑se ao modelo escolhido.</p>
+                    <p class="simulator-form-hint simulator-form-hint--intro" data-lang="pt">Na compra pode usar estimativas internas ou valores manuais para manutenção, pneus e impostos. No renting, indique o que já está incluído na renda.</p>
+                    <p class="simulator-form-hint simulator-form-hint--intro" data-lang="en">Purchase and leasing each show relevant fields.</p>
+                    <p class="simulator-form-hint simulator-form-hint--intro" data-lang="en">For purchase, rely on internal estimates or enter maintenance, tyres, and taxes annually. For leasing, say what is included in the monthly fee.</p>
                   </div>
                 </div>
               </div>
@@ -296,9 +303,20 @@
                         <input id="purchaseInitialPayment" name="purchaseInitialPayment" type="number" min="0" value="" placeholder="—" data-placeholder-pt="—" data-placeholder-en="—" />
                       </div>
 
-                      <div class="field field-span-2 simulator-checkbox-field">
-                        <input type="checkbox" id="useInternalOpexEstimate" name="useInternalOpexEstimate" checked />
-                        <label for="useInternalOpexEstimate">Use internal estimates for maintenance, tyres, and taxes</label>
+                      <div class="field field-span-2 simulator-toggle-field">
+                        <label class="simulator-toggle">
+                          <input
+                            type="checkbox"
+                            class="simulator-toggle-input"
+                            id="useInternalOpexEstimate"
+                            name="useInternalOpexEstimate"
+                            checked
+                          />
+                          <span class="simulator-toggle-track" aria-hidden="true">
+                            <span class="simulator-toggle-thumb"></span>
+                          </span>
+                          <span class="simulator-toggle-label">Use internal estimates for maintenance, tyres, and taxes</span>
+                        </label>
                       </div>
 
                       <details class="simulator-advanced purchase-manual-opex field-span-2 is-hidden">
