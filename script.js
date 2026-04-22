@@ -12,6 +12,8 @@ const form = el("tcoForm");
 const acquisitionModel = el("acquisitionModel");
 const resultsPanel = el("resultsPanel");
 const feedback = el("simulatorFeedback");
+const siteHeader = document.querySelector(".site-header");
+const navToggle = document.querySelector(".nav-toggle");
 
 /**
  * Calibration constants — keep out of DOM; tune here.
@@ -196,6 +198,32 @@ function updateSelectOptions() {
     const pt = opt.getAttribute("data-label-pt");
     const en = opt.getAttribute("data-label-en");
     opt.textContent = currentLang === "en" ? en || pt : pt || en;
+  });
+}
+
+function setupMobileNavigation() {
+  if (!siteHeader || !navToggle) return;
+
+  const closeMenu = () => {
+    siteHeader.classList.remove("is-menu-open");
+    navToggle.setAttribute("aria-expanded", "false");
+  };
+
+  navToggle.addEventListener("click", () => {
+    const isOpen = siteHeader.classList.toggle("is-menu-open");
+    navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMenu();
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 900) closeMenu();
+  });
+
+  siteHeader.querySelectorAll(".main-nav a").forEach((link) => {
+    link.addEventListener("click", closeMenu);
   });
 }
 
@@ -670,3 +698,4 @@ toggleInternalOpexFields();
 toggleRentingInsuranceField();
 updateDynamicPlaceholders();
 updateSelectOptions();
+setupMobileNavigation();
