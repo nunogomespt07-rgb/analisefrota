@@ -1621,10 +1621,23 @@ html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-fuel"] .card-
     grid-template-columns: 1fr;
     gap: clamp(22px, 5vw, 28px);
     margin-top: clamp(24px, 5vw, 32px);
+    padding-left: var(--s-1);
   }
 
   .why-card {
     padding: clamp(32px, 6vw, 44px) clamp(22px, 5vw, 36px);
+  }
+
+  .why-item {
+    display: grid;
+    grid-template-columns: 1.15rem minmax(0, 1fr);
+    column-gap: 12px;
+    align-items: start;
+  }
+
+  .why-number {
+    text-align: right;
+    line-height: 1.4;
   }
 }
 
