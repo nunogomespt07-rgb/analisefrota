@@ -400,11 +400,13 @@ textarea {
   display: none;
   width: 44px;
   height: 44px;
-  padding: 9px 8px;
-  border: 1px solid rgba(15, 23, 42, 0.14);
+  padding: 10px 9px;
+  border: 1px solid transparent;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.72);
+  background: transparent;
+  color: rgba(15, 23, 42, 0.88);
   cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
 }
 
 .nav-toggle span {
@@ -412,8 +414,13 @@ textarea {
   width: 100%;
   height: 2px;
   margin: 4px 0;
-  background: #0f172a;
+  background: currentColor;
   border-radius: 999px;
+}
+
+.nav-toggle:hover {
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.12);
 }
 
 .nav-toggle:focus-visible {
@@ -2797,6 +2804,7 @@ html.lang-en [data-lang="pt"] {
     justify-content: center;
     align-items: stretch;
     flex-shrink: 0;
+    background: transparent;
   }
 
   .main-nav {
