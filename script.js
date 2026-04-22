@@ -25,7 +25,6 @@ const TCO_INTERNAL = {
   insuranceBase: { combustion: 480, hybrid: 450, electric: 420 },
   profileFactor: { urbano: 1.1, misto: 1, estrada: 0.95 },
   defaultExcessMileagePerKm: 0.09,
-  rentingIncludedKmFactor: 0.92,
   kmOpexScale(annualKm) {
     if (annualKm <= 0) return 1;
     return Math.min(1.35, Math.max(0.82, 1 + (annualKm - 20000) / 90000));
@@ -39,6 +38,55 @@ function toNumber(value) {
 
 function nonNegative(value) {
   return Math.max(0, toNumber(value));
+}
+
+/**
+ * Tetos legais de base tributável (sem IVA) para leitura indicativa de dedução de IVA em viaturas (PT).
+ * Não altera o TCO.
+ */
+const PT_IVA_FISCAL = {
+  CAP_BEV_EX_VAT: 62500,
+  CAP_PHEV_EX_VAT: 50000,
+  /** IVA normal à data; usado só para converter PVP com IVA → base sem IVA */
+  DEFAULT_VAT_RATE: 0.23,
+};
+
+/**
+ * Elegibilidade binária (sem dedução parcial) para o teto de base sem IVA em BEV/PHEV.
+ * Se o preço for com IVA, converte antes de comparar: preco_sem_iva = preco / (1 + taxaIVA).
+ *
+ * @param {number} preco Valor indicado pelo utilizador
+ * @param {'BEV'|'PHEV'} tipo BEV = 100% elétrico; PHEV = híbrido plug-in (a categoria «Híbrido» no simulador assume PHEV para este teto)
+ * @param {number} taxaIVA ex.: 0.23
+ * @param {boolean} [inputPriceIsGross=true] true = preço com IVA (PVP); false = já sem IVA
+ * @returns {{ applicable: boolean, eligible: boolean, precoSemIva: number, estimatedVatComponent: number | null }}
+ */
+function calculateVatEligibility(preco, tipo, taxaIVA, inputPriceIsGross = true) {
+  const r = nonNegative(taxaIVA);
+  const p = nonNegative(preco);
+  const precoSemIva =
+    p > 0 && inputPriceIsGross && r > 0 ? p / (1 + r) : p;
+  let estimatedVatComponent = null;
+  if (p > 0) {
+    estimatedVatComponent = inputPriceIsGross && r > 0 ? p - precoSemIva : p * r;
+  }
+  if (tipo !== "BEV" && tipo !== "PHEV") {
+    return { applicable: false, eligible: false, precoSemIva, estimatedVatComponent };
+  }
+  let eligible = false;
+  if (tipo === "BEV" && precoSemIva <= PT_IVA_FISCAL.CAP_BEV_EX_VAT) {
+    eligible = true;
+  }
+  if (tipo === "PHEV" && precoSemIva <= PT_IVA_FISCAL.CAP_PHEV_EX_VAT) {
+    eligible = true;
+  }
+  return { applicable: true, eligible, precoSemIva, estimatedVatComponent };
+}
+
+function powertrainToVatVehicleType(powertrain) {
+  if (powertrain === "electric") return "BEV";
+  if (powertrain === "hybrid") return "PHEV";
+  return null;
 }
 
 function formatCurrency(value, fractionDigits = 0) {
@@ -283,6 +331,7 @@ function getTexts() {
         defaultHint:
           "Indicative simulation: purchase uses an internal residual estimate (shown in results); leasing follows your contract “includes” choices.",
         purchaseBase: "Net acquisition (price − estimated residual)",
+        purchaseEntrada: "Down payment (not included in TCO total above)",
         rentingBase: "Lease payments + initial payment",
         energy: "Energy",
         maintenance: "Maintenance",
@@ -296,12 +345,15 @@ function getTexts() {
         taxesEst: "(estimated)",
         insEst: "(estimated)",
         inclRent: "(included in payment)",
+        vatIvaEligible: "Eligible for VAT deduction",
+        vatIvaNotEligible: "Not eligible for VAT deduction",
       }
     : {
         invalid: "Por favor valide os campos: ",
         defaultHint:
           "Simulação indicativa: na compra o valor residual é estimado internamente (ver resultados); no renting aplicam-se as opções «incluído na renda».",
         purchaseBase: "Aquisição líquida (preço − residual estimado)",
+        purchaseEntrada: "Entrada inicial (não entra no TCO indicado acima)",
         rentingBase: "Rendas + entrada inicial",
         energy: "Energia",
         maintenance: "Manutenção",
@@ -315,6 +367,8 @@ function getTexts() {
         taxesEst: "(estimado)",
         insEst: "(estimado)",
         inclRent: "(incluído na renda)",
+        vatIvaEligible: "Elegível para dedução de IVA",
+        vatIvaNotEligible: "Não elegível para dedução de IVA",
       };
 }
 
@@ -327,7 +381,8 @@ function setBreakdownLine(id, label, value, suffix = "") {
 
 /**
  * Purchase TCO over the analysis period (€).
- * Formula: preço − residual_estimado + entrada_opcional + energia + seguro + impostos + manutenção + pneus
+ * Aquisitivo: (preço − residual); entrada inicial não entra no TCO (é tesouraria, não duplicar o preço total).
+ * + energia, seguro, impostos, manutenção, pneus. Juros de financiamento não modelados.
  */
 function calculatePurchaseTCO(ctx) {
   const {
@@ -385,7 +440,6 @@ function calculatePurchaseTCO(ctx) {
 
   const tcoTotal =
     netAcquisition +
-    initialCash +
     energyTotal +
     insuranceTotal +
     taxesTotal +
@@ -466,11 +520,7 @@ function calculateRentingTCO(ctx) {
   }
 
   const includedKmYear = contractAnnualKm > 0 ? contractAnnualKm : kmPerYear;
-  const includedKmYearAdjusted = Math.max(
-    0,
-    includedKmYear * TCO_INTERNAL.rentingIncludedKmFactor
-  );
-  const includedKmTotal = includedKmYearAdjusted * years;
+  const includedKmTotal = includedKmYear * years;
   let excessKm = Math.max(0, totalKm - includedKmTotal);
 
   if (excessKmPeriodProvided) {
@@ -641,14 +691,45 @@ form?.addEventListener("submit", (event) => {
   el("resultAnnualCost").textContent = formatCurrency(monthlyAverageCost);
   el("resultCostPerKm").textContent = formatCurrency(costPerKm, 2);
   el("resultFiscal").textContent = getIndicativeFiscalReading(powertrain);
+
+  const vatIvaNode = el("resultVatIva");
+  if (vatIvaNode) {
+    const vatType = powertrainToVatVehicleType(powertrain);
+    if (model === "purchase" && vatType) {
+      const purchasePriceForVat = nonNegative(el("purchasePrice")?.value);
+      const vatMode = el("purchasePriceVatInput")?.value || "gross";
+      const inputGross = vatMode !== "net";
+      const vatRes = calculateVatEligibility(
+        purchasePriceForVat,
+        vatType,
+        PT_IVA_FISCAL.DEFAULT_VAT_RATE,
+        inputGross
+      );
+      vatIvaNode.classList.remove("is-hidden");
+      vatIvaNode.textContent = vatRes.eligible ? t.vatIvaEligible : t.vatIvaNotEligible;
+    } else {
+      vatIvaNode.classList.add("is-hidden");
+      vatIvaNode.textContent = "—";
+    }
+  }
+
   el("resultRecommendation").textContent = getRecommendation(costPerKm);
 
   const residualWrap = el("resultResidualWrap");
 
+  const entradaInfo = el("resultBreakdownEntrada");
+
   if (model === "purchase") {
     const baseLabel = t.purchaseBase;
-    const baseAmount = result.netAcquisition + result.initialCash;
-    setBreakdownLine("resultBreakdownBase", baseLabel, baseAmount);
+    setBreakdownLine("resultBreakdownBase", baseLabel, result.netAcquisition);
+    if (entradaInfo) {
+      if (result.initialCash > 0) {
+        entradaInfo.classList.remove("is-hidden");
+        entradaInfo.textContent = `${t.purchaseEntrada}: ${formatCurrency(result.initialCash)}`;
+      } else {
+        entradaInfo.classList.add("is-hidden");
+      }
+    }
     residualWrap?.classList.remove("is-hidden");
     const resLab =
       currentLang === "en" ? "Estimated residual value" : "Valor residual estimado";
@@ -657,6 +738,7 @@ form?.addEventListener("submit", (event) => {
       resNode.textContent = `${resLab}: ${formatCurrency(result.residualEstimated)}`;
     }
   } else {
+    entradaInfo?.classList.add("is-hidden");
     const baseAmount = result.rentPaymentsTotal + result.initialCash;
     setBreakdownLine("resultBreakdownBase", t.rentingBase, baseAmount);
     residualWrap?.classList.add("is-hidden");

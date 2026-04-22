@@ -18,7 +18,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://analisefrota.pt/en/" />
   <meta property="og:image" content="https://analisefrota.pt/assets/hero-bg.jpg" />
-  <meta property="og:image:alt" content="Business fleet context — AnaliseFrota consulting for fleet analysis, cost reduction, and TCO" />
+  <meta property="og:image:alt" content="Business fleet: TCO and total cost analysis with AnaliseFrota" />
   <meta property="og:site_name" content="AnaliseFrota" />
   <meta property="og:locale" content="en_GB" />
   <meta property="og:locale:alternate" content="pt_PT" />
@@ -101,7 +101,7 @@
     <main id="top">
       <section class="section section--hero section--bleed homepage-hero" aria-label="Start">
         <div class="section__bleed" aria-hidden="true">
-          <div class="hero-media" role="img" aria-label="Business fleet imagery — fleet analysis, fleet optimization, and business vehicle management with AnaliseFrota."></div>
+          <div class="hero-media" role="img" aria-label="Business fleet: total cost of ownership (TCO) analysis with AnaliseFrota."></div>
           <div class="hero-scrim"></div>
           <div class="hero-noise"></div>
         </div>
@@ -111,29 +111,23 @@
             <div class="eyebrow">Strategic analysis for businesses</div>
             <h1 class="hero-title">See where your company can reduce<br>total fleet cost</h1>
             <p>
-              A 2-minute simulation built on real-world cost assumptions.
+              Strategic TCO: estimate total cost in about 2 minutes, with real market assumptions.
             </p>
-
             <p class="hero-positioning">
-              Consultative reading for mobility decisions with measurable financial impact.
+              Based on real fleet and operating scenarios, with meaningful financial impact.
             </p>
 
             <div class="hero-actions">
               <a href="/en/#simulador" class="btn btn-primary">Simulate total cost</a>
             </div>
-            <ul class="hero-positioning" aria-label="Simulation advantages">
-              <li>No commercial commitment</li>
-              <li>Immediate readout</li>
-              <li>Based on real assumptions</li>
-            </ul>
           </div>
 
           <div class="hero-aside">
             <div class="hero-panel">
-              <div class="hero-panel-label">Consultative focus</div>
+              <div class="hero-panel-label">Decision framework</div>
               <div class="hero-panel-value">TCO · Taxation · Acquisition</div>
               <p>
-                A framework for companies that need clear decisions across cost, operations and taxation.
+                One consistent lens for total cost, operations and taxation.
               </p>
             </div>
           </div>
@@ -147,7 +141,7 @@
             <p class="section-lead-text">
               Identify where total cost can be reduced with an objective fleet readout.
             </p>
-            <a href="/en/reduce-fleet-costs.html" class="btn btn-primary btn-lead-cta">Read the strategic cost guide</a>
+            <a href="/en/reduce-fleet-costs.html" class="btn btn-secondary btn-lead-cta">Read the strategic cost guide</a>
           </div>
         </div>
       </section>
@@ -160,12 +154,12 @@
               <h2 class="text-center editorial-title">Reduce fleet cost<br>without compromising operations and brand image.</h2>
               <div class="prose-editorial-lead">
                 <p>
-                  Identify savings and operational gains with a clear, decision-oriented approach.
+                  Objective insight on savings and efficiency, for fleet decisions where total cost and positioning both matter.
                 </p>
               </div>
               <p class="editorial-support-line">
-                If you are preparing decisions with the simulator, read the guide on
-                <a href="/en/reduce-fleet-costs.html">reducing fleet costs</a> with a practical method and measurable focus.
+                If you are using the simulator, read the guide on
+                <a href="/en/reduce-fleet-costs.html">reducing fleet costs</a> for a clear method and a measurable view.
               </p>
             </div>
           </div>
@@ -175,8 +169,8 @@
       <section class="section section--surface section--why-sim" aria-labelledby="why-sim-heading">
         <div class="why-sim-frame">
           <div class="why-card">
-            <h2 id="why-sim-heading" class="why-card-title">Why use this simulator</h2>
-            <div class="why-grid" role="list" aria-label="Simulator benefits">
+            <h2 id="why-sim-heading" class="why-card-title">Why start with TCO</h2>
+            <div class="why-grid" role="list" aria-label="Three TCO focus areas">
               <div class="why-item" role="listitem">
                 <span class="why-number">1</span>
                 <p class="why-text">Hidden costs identified</p>
@@ -209,7 +203,7 @@
                         Enter your details to estimate total cost over the analysis period you choose.
                       </p>
                       <p class="simulator-intro-lead simulator-intro-lead--secondary">
-                        The outcome is consultative — useful for comparing scenarios before deeper work.
+                        A consultative read, useful for comparing scenarios before going deeper.
                       </p>
                     </div>
                   </div>
@@ -221,7 +215,9 @@
                   </div>
                 </div>
               </div>
-
+              <p class="simulator-context-hint">
+                Especially relevant for mid- to high-segment fleets, with material TCO impact.
+              </p>
               <form class="simulator-form simulator-form--saas" id="tcoForm" novalidate>
 
                 <div class="simulator-form__group">
@@ -306,6 +302,14 @@
                       <div class="field field-span-2">
                         <label for="purchasePrice">Vehicle purchase price (€)</label>
                         <input id="purchasePrice" name="purchasePrice" type="number" min="0" placeholder="E.g.: 32000" data-placeholder-pt="Ex: 32000" data-placeholder-en="E.g.: 32000" />
+                      </div>
+
+                      <div class="field field-span-2">
+                        <label for="purchasePriceVatInput">Price basis (for VAT read)</label>
+                        <select id="purchasePriceVatInput" name="purchasePriceVatInput">
+                          <option value="gross" data-label-pt="Com IVA" data-label-en="With VAT">With VAT</option>
+                          <option value="net" data-label-pt="Sem IVA" data-label-en="Excl. VAT">Excl. VAT</option>
+                        </select>
                       </div>
 
                       <div class="field">
@@ -437,6 +441,7 @@
                   <div class="result-box">
                     <span>Indicative tax position</span>
                     <strong id="resultFiscal">—</strong>
+                    <small id="resultVatIva" class="is-hidden">—</small>
                   </div>
                   <div class="result-box result-box-wide">
                     <span>Recommendation</span>
@@ -449,6 +454,7 @@
                       <small id="resultResidualEstimated">Estimated residual value: —</small>
                       <small id="resultResidualNote" class="result-residual-note">Internal estimate based on depreciation and usage profile.</small>
                     </div>
+                    <small id="resultBreakdownEntrada" class="is-hidden">Down payment: —</small>
                     <small id="resultBreakdownEnergy">Energy: —</small>
                     <small id="resultBreakdownMaintenance">Maintenance: —</small>
                     <small id="resultBreakdownTyres">Tyres: —</small>
@@ -458,7 +464,7 @@
                     <small id="resultBreakdownOther">Other / end of contract: —</small>
                   </div>
                   <div class="result-box result-box-wide">
-                    <small id="resultDisclaimer">Indicative simulation for decision support. Results depend on the data entered and on the actual acquisition, usage, tax, and contract conditions.</small>
+                    <small id="resultDisclaimer">Indicative simulation for decision support. Results depend on the data entered and on the actual acquisition, usage, tax, and contract conditions. It does not include all financial costs of capital in a purchase, such as interest or opportunity cost. The tax read is indicative for Portugal in general. Actual treatment depends on your company’s tax position and specific circumstances.</small>
                   </div>
                   <div class="result-box result-box-wide">
                     <span>Want a personalized analysis for your fleet?</span>

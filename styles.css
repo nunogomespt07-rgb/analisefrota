@@ -1,6 +1,7 @@
 /* === Design tokens & base === */
 :root {
   --text: #0f172a;
+  --text-secondary: #64748b;
   --muted: #64748b;
   --heading: #0f172a;
   --accent: #1d4ed8;
@@ -776,17 +777,6 @@ a.btn:focus-visible {
   margin: 22px 0 16px;
 }
 
-.homepage-hero .hero-copy .hero-positioning:last-child li {
-  margin-bottom: 8px;
-  color: #dbeafe;
-}
-
-.homepage-hero .hero-copy .hero-positioning:last-child li::before {
-  content: "✔";
-  margin-right: 9px;
-  color: #7dd3fc;
-}
-
 .homepage-hero .hero-panel,
 .guide-page-hero .hero-panel {
   width: clamp(280px, 28vw, var(--hero-panel-max));
@@ -860,7 +850,7 @@ a.btn:focus-visible {
     margin-bottom: 16px;
   }
 
-  .homepage-hero .hero-copy .hero-positioning:last-child,
+  .homepage-hero .hero-copy p.hero-positioning,
   .guide-page-hero .guide-hero-support {
     margin-top: 2px;
     font-size: 0.86rem;
@@ -913,15 +903,12 @@ a.btn:focus-visible {
 
 .rich-text p {
   margin: 0;
+  max-width: 100%;
+  line-height: 1.65;
 }
 
 .rich-text p + p {
   margin-top: var(--s-3);
-}
-
-.rich-text p {
-  max-width: 100%;
-  line-height: 1.6;
 }
 
 .rich-text strong {
@@ -1514,8 +1501,9 @@ html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-fuel"] .card-
 .prose-editorial-lead p {
   margin: 0;
   font-size: var(--body);
-  line-height: var(--body-lh);
+  line-height: 1.65;
   color: var(--muted);
+  text-wrap: balance;
 }
 
 .editorial-support-line {
@@ -1666,6 +1654,22 @@ html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-fuel"] .card-
   margin-bottom: var(--s-4);
   padding-bottom: var(--s-4);
   border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+}
+
+/* Evita colapso 32px+24px: respiro explícito de 24px antes da nota editorial */
+.simulator-main .simulator-intro-block:has(+ .simulator-context-hint) {
+  margin-bottom: 0;
+}
+
+.simulator-main .simulator-context-hint {
+  max-width: 600px;
+  margin: 24px auto 16px;
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  color: var(--text-secondary);
+  opacity: 0.85;
 }
 
 .simulator-intro-stack {
@@ -3120,6 +3124,7 @@ html.lang-en [data-lang="pt"] {
   .prose-editorial-lead p {
     max-width: 34rem;
     margin-inline: auto;
+    line-height: 1.65;
   }
 
   .editorial-support-line {

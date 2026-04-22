@@ -18,7 +18,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://analisefrota.pt/" />
   <meta property="og:image" content="https://analisefrota.pt/assets/hero-bg.jpg" />
-  <meta property="og:image:alt" content="Contexto de frota empresarial — AnaliseFrota, consultoria em análise de frota, optimização de custos e TCO" />
+  <meta property="og:image:alt" content="Frota empresarial: análise TCO e custo total com a AnaliseFrota" />
   <meta property="og:site_name" content="AnaliseFrota" />
   <meta property="og:locale" content="pt_PT" />
   <meta property="og:locale:alternate" content="en_GB" />
@@ -101,7 +101,7 @@
     <main id="top">
       <section class="section section--hero section--bleed homepage-hero" aria-label="Início">
         <div class="section__bleed" aria-hidden="true">
-          <div class="hero-media" role="img" aria-label="Ilustração visual de frota empresarial — análise de frota, optimização de custos e gestão de viaturas com a AnaliseFrota."></div>
+          <div class="hero-media" role="img" aria-label="Frota empresarial: leitura de custo total (TCO) com a AnaliseFrota."></div>
           <div class="hero-scrim"></div>
           <div class="hero-noise"></div>
         </div>
@@ -111,29 +111,23 @@
             <div class="eyebrow">Análise estratégica para empresas</div>
             <h1 class="hero-title">Descubra onde reduzir<br>o custo total da sua frota</h1>
             <p>
-              Simulação em 2 minutos com pressupostos reais de mercado.
+              Decisão estratégica em TCO: estimativa em cerca de 2 minutos, com pressupostos reais de mercado.
             </p>
-
             <p class="hero-positioning">
-              Leitura consultiva para decisões de mobilidade com impacto financeiro mensurável.
+              Aplicado a decisões reais de gestão de frota, com impacto financeiro relevante.
             </p>
 
             <div class="hero-actions">
               <a href="#simulador" class="btn btn-primary">Simular custo total</a>
             </div>
-            <ul class="hero-positioning" aria-label="Vantagens da simulação">
-              <li>Sem compromisso comercial</li>
-              <li>Leitura imediata</li>
-              <li>Baseado em pressupostos reais</li>
-            </ul>
           </div>
 
           <div class="hero-aside">
             <div class="hero-panel">
-              <div class="hero-panel-label">Foco consultivo</div>
+              <div class="hero-panel-label">Ferramenta de decisão</div>
               <div class="hero-panel-value">TCO · Fiscalidade · Aquisição</div>
               <p>
-                Estrutura para empresas que querem decidir com clareza entre custo, operação e fiscalidade.
+                Quadro de leitura para alinhar custo total, operação e fiscalidade no mesmo critério.
               </p>
             </div>
           </div>
@@ -160,11 +154,11 @@
               <h2 class="text-center editorial-title">Reduza custo de frota<br>sem comprometer operação e imagem.</h2>
               <div class="prose-editorial-lead">
                 <p>
-                  Identifique oportunidades de poupança e eficiência com uma abordagem objetiva, orientada a decisão.
+                  Leitura objetiva de poupança e eficiência, para decisões de frota em que o custo total e o posicionamento importam.
                 </p>
               </div>
               <p class="editorial-support-line">
-                Se está a preparar decisões no simulador, leia o guia para <a href="/reduzir-custos-frota.html">reduzir custos de frota</a> com método prático e foco em resultado.
+                Se for usar o simulador, leia o guia para <a href="/reduzir-custos-frota.html">reduzir custos de frota</a> com método claro e foco em resultado.
               </p>
             </div>
           </div>
@@ -174,8 +168,8 @@
       <section class="section section--surface section--why-sim" aria-labelledby="why-sim-heading">
         <div class="why-sim-frame">
           <div class="why-card">
-            <h2 id="why-sim-heading" class="why-card-title">Porque usar este simulador</h2>
-            <div class="why-grid" role="list" aria-label="Benefícios do simulador">
+            <h2 id="why-sim-heading" class="why-card-title">Porquê começar pelo TCO</h2>
+            <div class="why-grid" role="list" aria-label="Três eixos da análise TCO">
               <div class="why-item" role="listitem">
                 <span class="why-number">1</span>
                 <p class="why-text">Custos ocultos identificados</p>
@@ -208,7 +202,7 @@
                         Preencha os dados para estimar o custo total ao longo do período que escolher.
                       </p>
                       <p class="simulator-intro-lead simulator-intro-lead--secondary">
-                        O resultado é uma leitura consultiva — útil para comparar cenários antes de ir mais fundo.
+                        Leitura consultiva, útil para comparar cenários antes de aprofundar.
                       </p>
                     </div>
                   </div>
@@ -220,7 +214,9 @@
                   </div>
                 </div>
               </div>
-
+              <p class="simulator-context-hint">
+                Relevante em frotas de segmento médio-alto, com impacto material no TCO.
+              </p>
               <form class="simulator-form simulator-form--saas" id="tcoForm" novalidate>
 
                 <div class="simulator-form__group">
@@ -305,6 +301,14 @@
                       <div class="field field-span-2">
                         <label for="purchasePrice">Preço de compra da viatura (€)</label>
                         <input id="purchasePrice" name="purchasePrice" type="number" min="0" placeholder="Ex: 32000" data-placeholder-pt="Ex: 32000" data-placeholder-en="E.g.: 32000" />
+                      </div>
+
+                      <div class="field field-span-2">
+                        <label for="purchasePriceVatInput">Indicação de preço (base de IVA)</label>
+                        <select id="purchasePriceVatInput" name="purchasePriceVatInput">
+                          <option value="gross" data-label-pt="Com IVA" data-label-en="With VAT">Com IVA</option>
+                          <option value="net" data-label-pt="Sem IVA" data-label-en="Excl. VAT">Sem IVA</option>
+                        </select>
                       </div>
 
                       <div class="field">
@@ -436,6 +440,7 @@
                   <div class="result-box">
                     <span>Enquadramento fiscal indicativo</span>
                     <strong id="resultFiscal">—</strong>
+                    <small id="resultVatIva" class="is-hidden">—</small>
                   </div>
                   <div class="result-box result-box-wide">
                     <span>Recomendação</span>
@@ -448,6 +453,7 @@
                       <small id="resultResidualEstimated">Valor residual estimado: —</small>
                       <small id="resultResidualNote" class="result-residual-note">Estimativa interna baseada em depreciação e perfil de utilização.</small>
                     </div>
+                    <small id="resultBreakdownEntrada" class="is-hidden">Entrada inicial: —</small>
                     <small id="resultBreakdownEnergy">Energia: —</small>
                     <small id="resultBreakdownMaintenance">Manutenção: —</small>
                     <small id="resultBreakdownTyres">Pneus: —</small>
@@ -457,7 +463,7 @@
                     <small id="resultBreakdownOther">Outros / fim de contrato: —</small>
                   </div>
                   <div class="result-box result-box-wide">
-                    <small id="resultDisclaimer">Simulação indicativa para apoio à decisão. Os resultados dependem dos dados inseridos e das condições reais de aquisição, utilização, fiscalidade e contrato.</small>
+                    <small id="resultDisclaimer">Simulação indicativa para apoio à decisão. Os resultados dependem dos dados inseridos e das condições reais de aquisição, utilização, fiscalidade e contrato. Não incorpora na compra todos os custos financeiros do capital, como juros ou custo de oportunidade. Leitura fiscal indicativa com base no enquadramento geral em Portugal. A aplicação efetiva depende do regime fiscal e do contexto específico da empresa.</small>
                   </div>
                   <div class="result-box result-box-wide">
                     <span>Quer uma análise personalizada da sua frota?</span>
