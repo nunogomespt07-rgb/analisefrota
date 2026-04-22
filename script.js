@@ -29,6 +29,9 @@ const TCO_INTERNAL = {
     if (annualKm <= 0) return 1;
     return Math.min(1.35, Math.max(0.82, 1 + (annualKm - 20000) / 90000));
   },
+  /** PHEV: consumo elétrico médio (kWh/100 km) e preço €/kWh — não expostos ao utilizador */
+  phevElectricKwhPer100: 18,
+  phevDefaultElectricityEurPerKwh: 0.22,
 };
 
 function toNumber(value) {
@@ -143,12 +146,47 @@ function estimateDefaultInsuranceAnnual(powertrain, profile) {
 
 /**
  * Total energy cost over the analysis period (€).
+ * Combustão e BEV: uma única energia = (km/100) × consumo × preço.
  */
 function calculateEnergyCost(totalKm, consumptionPer100km, energyUnitPrice) {
   const km = Math.max(0, totalKm);
   const cons = nonNegative(consumptionPer100km);
   const price = nonNegative(energyUnitPrice);
   return (km / 100) * cons * price;
+}
+
+/**
+ * Custo de energia no período. PHEV (hybrid): parte elétrica + parte combustível.
+ * Consumo do utilizador = só combustível (L/100 km); elétrico fixo internamente (kWh/100);
+ * preço combustível = campo «preço da energia»; eletricidade = referência interna €/kWh.
+ */
+function calculatePeriodEnergyCost({
+  totalKm,
+  powertrain,
+  consumption,
+  energyUnitPrice,
+  phevElectricSharePercent,
+}) {
+  const km = Math.max(0, totalKm);
+  if (powertrain !== "hybrid") {
+    return calculateEnergyCost(km, consumption, energyUnitPrice);
+  }
+  const rawPhev =
+    phevElectricSharePercent === undefined || phevElectricSharePercent === null
+      ? 50
+      : nonNegative(phevElectricSharePercent);
+  const pct = Math.min(100, Math.max(0, rawPhev));
+  const shareE = pct / 100;
+  const shareF = 1 - shareE;
+  const kmE = km * shareE;
+  const kmF = km * shareF;
+  const fuelCons = nonNegative(consumption);
+  const fuelPrice = nonNegative(energyUnitPrice);
+  const fuelPart = (kmF / 100) * fuelCons * fuelPrice;
+  const elecCons = TCO_INTERNAL.phevElectricKwhPer100;
+  const elecPrice = TCO_INTERNAL.phevDefaultElectricityEurPerKwh;
+  const elecPart = (kmE / 100) * elecCons * elecPrice;
+  return fuelPart + elecPart;
 }
 
 /**
@@ -312,6 +350,13 @@ function toggleRentingInsuranceField() {
   row.classList.toggle("is-hidden", hide);
 }
 
+function togglePhevElectricField() {
+  const isHybrid = el("powertrainType")?.value === "hybrid";
+  document.querySelectorAll(".phev-only").forEach((node) => {
+    node.classList.toggle("is-hidden", !isHybrid);
+  });
+}
+
 function setFeedback(message) {
   if (feedback) {
     feedback.textContent = message;
@@ -394,6 +439,7 @@ function calculatePurchaseTCO(ctx) {
     profile,
     consumption,
     energyPrice,
+    phevElectricSharePercent,
     useInternalOpexEstimate,
     manualMaintenanceAnnual,
     manualTyresAnnual,
@@ -402,7 +448,13 @@ function calculatePurchaseTCO(ctx) {
   } = ctx;
 
   const totalKm = years * kmPerYear;
-  const energyTotal = calculateEnergyCost(totalKm, consumption, energyPrice);
+  const energyTotal = calculatePeriodEnergyCost({
+    totalKm,
+    powertrain,
+    consumption,
+    energyUnitPrice: energyPrice,
+    phevElectricSharePercent,
+  });
 
   const residualEstimated = estimateResidualValue({
     purchasePrice,
@@ -485,6 +537,7 @@ function calculateRentingTCO(ctx) {
     profile,
     consumption,
     energyPrice,
+    phevElectricSharePercent,
     rentIncludesMaintenance,
     rentIncludesTyres,
     rentIncludesTaxes,
@@ -497,7 +550,13 @@ function calculateRentingTCO(ctx) {
   } = ctx;
 
   const totalKm = years * kmPerYear;
-  const energyTotal = calculateEnergyCost(totalKm, consumption, energyPrice);
+  const energyTotal = calculatePeriodEnergyCost({
+    totalKm,
+    powertrain,
+    consumption,
+    energyUnitPrice: energyPrice,
+    phevElectricSharePercent,
+  });
 
   const rentPaymentsTotal = monthlyRent * months;
   const initialCash = nonNegative(rentingInitialPayment);
@@ -590,6 +649,7 @@ form?.addEventListener("submit", (event) => {
   const totalKm = years * kmPerYear;
   const consumption = nonNegative(el("consumptionValue")?.value);
   const energyPrice = nonNegative(el("energyPrice")?.value);
+  const phevElectricSharePercent = parsePhevElectricSharePercent(el("phevElectricShare")?.value);
 
   const errors = [];
   addValidationError(errors, !powertrain, currentLang === "en" ? "powertrain type" : "tipo de motorização");
@@ -629,6 +689,7 @@ form?.addEventListener("submit", (event) => {
       profile,
       consumption,
       energyPrice,
+      phevElectricSharePercent,
       useInternalOpexEstimate,
       manualMaintenanceAnnual: el("manualMaintenanceAnnual")?.value,
       manualTyresAnnual: el("manualTyresAnnual")?.value,
@@ -663,6 +724,7 @@ form?.addEventListener("submit", (event) => {
       profile,
       consumption,
       energyPrice,
+      phevElectricSharePercent,
       rentIncludesMaintenance,
       rentIncludesTyres,
       rentIncludesTaxes,
@@ -780,4 +842,5 @@ toggleInternalOpexFields();
 toggleRentingInsuranceField();
 updateDynamicPlaceholders();
 updateSelectOptions();
+togglePhevElectricField();
 setupMobileNavigation();

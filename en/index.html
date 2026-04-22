@@ -292,6 +292,11 @@
                         <label for="energyPrice">Energy price (€/L or €/kWh)</label>
                         <input id="energyPrice" name="energyPrice" type="number" min="0" step="0.01" placeholder="E.g.: 1.75" data-placeholder-pt="Ex: 1.75" data-placeholder-en="E.g.: 1.75" />
                       </div>
+
+                      <div class="field field-span-2 phev-only is-hidden">
+                        <label for="phevElectricShare">% use in electric mode <span class="label-optional">optional</span></label>
+                        <input id="phevElectricShare" name="phevElectricShare" type="number" min="0" max="100" step="1" value="50" placeholder="50" data-placeholder-pt="50" data-placeholder-en="50" />
+                      </div>
                     </div>
                   </div>
                 </div>
