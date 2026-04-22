@@ -44,6 +44,10 @@
   --hero-copy-max: 38rem;
   --hero-panel-max: 340px;
   --hero-grid-gap: clamp(20px, 3.2vw, 40px);
+  --card-pad: var(--s-3);
+  --section-stack-gap: var(--s-3);
+  --title-subtitle-gap: var(--s-2);
+  --list-item-gap: var(--s-2);
 }
 
 *,
@@ -200,9 +204,9 @@ textarea {
 }
 
 .btn-outline {
-  padding: 10px 16px;
+  padding: 12px 20px;
   min-height: var(--touch-target-min);
-  font-size: 0.94rem;
+  font-size: 0.97rem;
   font-weight: 500;
   color: #1e293b;
   background: transparent;
@@ -289,16 +293,6 @@ textarea {
 
 /* Shared visual system tokens */
 .section-eyebrow {
-  display: inline-block;
-  margin: 0 0 10px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #334155;
-}
-
-.section-label {
   display: inline-block;
   margin: 0 0 10px;
   font-size: 0.78rem;
@@ -535,8 +529,9 @@ a.btn:focus-visible {
 }
 
 .btn-secondary {
-  padding: 10px 20px;
-  font-size: 0.95rem;
+  min-height: 48px;
+  padding: 12px 24px;
+  font-size: 0.97rem;
   color: #0f172a;
   background: rgba(255, 255, 255, 0.85);
   border: 1.5px solid #cbd5e1;
@@ -666,7 +661,7 @@ a.btn:focus-visible {
 }
 
 .hero-copy .hero-positioning li + li {
-  margin-top: 6px;
+  margin-top: var(--s-1);
 }
 
 .hero-actions {
@@ -896,15 +891,10 @@ a.btn:focus-visible {
   width: 100%;
 }
 
-.guide-band--intro.section {
-  padding-top: clamp(var(--s-5), 8vw, var(--section-pad));
-  padding-bottom: clamp(var(--s-5), 8vw, var(--section-pad));
-}
-
 /* Authority guide pages: consistent rhythm, grid, premium editorial blocks */
 .guide-authority.section {
-  padding-top: 64px;
-  padding-bottom: 64px;
+  padding-top: var(--s-6);
+  padding-bottom: var(--s-6);
 }
 
 .content-narrow {
@@ -914,42 +904,11 @@ a.btn:focus-visible {
   margin-right: auto;
 }
 
-.content-wide {
-  width: 100%;
-  max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.section-intro-wrap {
-  margin: 0 auto;
-}
-
-.section-label.section-eyebrow {
-  margin-bottom: 10px;
-}
-
-p.section-intro {
-  margin: 0 0 24px;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: rgba(51, 65, 85, 0.78);
-  max-width: 600px;
-}
-
-.authority-eyebrow {
-  margin: 0 0 var(--s-3);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: none;
-  color: #334155;
-}
-
 .rich-text {
   font-size: var(--body);
   line-height: var(--body-lh);
   color: var(--muted);
+  max-width: var(--content-narrow);
 }
 
 .rich-text p {
@@ -961,7 +920,7 @@ p.section-intro {
 }
 
 .rich-text p {
-  max-width: 600px;
+  max-width: 100%;
   line-height: 1.6;
 }
 
@@ -984,112 +943,49 @@ p.section-intro {
   margin-top: var(--s-4);
 }
 
-.guide-section-header {
-  margin-bottom: var(--s-5);
-  text-align: left;
-}
-
-.guide-section-header .section-title {
-  margin-bottom: var(--s-2);
-}
-
 .section-subtitle {
   margin: 0 auto;
   max-width: 36rem;
   font-size: 1rem;
   font-weight: 500;
-  line-height: 1.55;
+  line-height: 1.6;
   letter-spacing: -0.015em;
   color: #475569;
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-
-.cards--3 {
-  grid-template-columns: 1fr;
 }
 
 .card {
   background: #ffffff;
   border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: var(--radius-lg);
-  padding: 22px;
+  padding: var(--card-pad);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   height: 100%;
 }
 
 .card h3 {
-  margin: 0 0 8px;
+  margin: 0 0 var(--s-1);
   font-size: 1rem;
-  line-height: 1.35;
+  line-height: 1.4;
   color: #0f172a;
 }
 
 .card p {
   margin: 0;
   opacity: 0.76;
-  font-size: 0.9rem;
-  line-height: 1.55;
-  max-width: none;
-}
-
-.feature-list {
-  margin: 20px 0 0;
-  padding-left: 18px;
-}
-
-.feature-list li {
-  margin-bottom: 8px;
-  font-size: 0.98rem;
+  font-size: 0.9375rem;
   line-height: 1.6;
-  color: #475569;
+  max-width: none;
 }
 
 .section-title + .rich-text {
   margin-top: var(--s-4);
 }
 
-.info-grid {
-  display: grid;
-  gap: var(--s-4);
-  align-items: stretch;
-}
-
-.info-grid--4 {
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 640px) {
-  .info-grid--4 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
-  .info-grid--4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-.info-grid--2 {
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 768px) {
-  .info-grid--2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 .info-card {
-  padding: var(--s-4);
+  padding: var(--card-pad);
   background: var(--surface);
   border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   height: 100%;
 }
@@ -1108,16 +1004,17 @@ p.section-intro {
 
 .info-card__title {
   margin: 0 0 var(--s-2);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: -0.02em;
+  line-height: 1.4;
   color: var(--heading);
 }
 
 .info-card__text {
   margin: 0;
   font-size: 0.9375rem;
-  line-height: 1.58;
+  line-height: 1.6;
   color: #475569;
 }
 
@@ -1154,12 +1051,6 @@ p.section-intro {
   font-size: 0.9375rem;
   line-height: 1.65;
   color: #64748b;
-}
-
-@media (min-width: 860px) {
-  .cards--3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 .transition-footnote a {
@@ -1202,7 +1093,7 @@ p.section-intro {
 }
 
 .page-reduce-costs .section-header {
-  margin-bottom: 24px;
+  margin-bottom: var(--section-stack-gap);
 }
 
 .page-reduce-costs .section-header--center {
@@ -1215,7 +1106,7 @@ p.section-intro {
 }
 
 .page-reduce-costs .section-title {
-  margin: 0 0 12px;
+  margin: 0 0 var(--title-subtitle-gap);
 }
 
 .page-reduce-costs .section-subtitle {
@@ -1235,19 +1126,39 @@ p.section-intro {
   margin: 0;
   padding-left: 20px;
   display: grid;
-  gap: 10px;
+  gap: var(--s-2);
   color: #475569;
   line-height: 1.6;
 }
 
 .page-reduce-costs .value-list--steps {
-  gap: 12px;
+  gap: var(--list-item-gap);
 }
 
 .page-reduce-costs .section-note {
-  margin: 16px 0 0;
+  margin: var(--s-2) 0 0;
   color: #64748b;
   line-height: 1.6;
+}
+
+/* PT guide page: center visual mass for the two 3-card strategic sections */
+html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-tco"] .section-header--center,
+html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-fuel"] .section-header--center {
+  max-width: 46rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-tco"] .rich-text,
+html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-fuel"] .rich-text {
+  max-width: 62rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-tco"] .card-grid--3,
+html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-fuel"] .card-grid--3 {
+  justify-content: center;
 }
 
 .page-reduce-costs .cta-block {
@@ -1260,12 +1171,8 @@ p.section-intro {
 }
 
 .page-reduce-costs .guide-authority.section {
-  padding-top: 56px;
-  padding-bottom: 56px;
-}
-
-.page-reduce-costs .guide-authority:first-of-type {
-  padding-top: 48px;
+  padding-top: var(--s-6);
+  padding-bottom: var(--s-6);
 }
 
 .section-closing .container {
@@ -1278,11 +1185,6 @@ p.section-intro {
   max-width: 40rem;
   margin-left: auto;
   margin-right: auto;
-}
-
-.section-closing .authority-eyebrow {
-  margin: 0 0 var(--s-3);
-  color: #334155;
 }
 
 .conclusion-block h2,
@@ -1434,7 +1336,7 @@ p.section-intro {
 }
 
 .article-list li + li {
-  margin-top: 10px;
+  margin-top: var(--s-1);
 }
 
 .article-list li::before {
@@ -1465,22 +1367,12 @@ p.section-intro {
     padding-right: 20px;
   }
 
-  .guide-authority.section {
-    padding-top: 64px;
-    padding-bottom: 64px;
-  }
-
-  p.section-intro {
-    margin-bottom: 22px;
-    font-size: 0.97rem;
-  }
-
   .card {
-    padding: 18px;
+    padding: var(--s-2);
   }
 
   .page-reduce-costs .section-header {
-    margin-bottom: 20px;
+    margin-bottom: var(--s-2);
   }
 
   .page-reduce-costs .section-subtitle {
@@ -1496,6 +1388,11 @@ p.section-intro {
   .page-reduce-costs .card-grid--4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-tco"] .card-grid--3,
+  html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-fuel"] .card-grid--3 {
+    grid-template-columns: repeat(2, minmax(0, 22rem));
+  }
 }
 
 @media (min-width: 1060px) {
@@ -1505,6 +1402,11 @@ p.section-intro {
 
   .page-reduce-costs .card-grid--4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-tco"] .card-grid--3,
+  html[lang^="pt"] .page-reduce-costs section[aria-labelledby="guide-fuel"] .card-grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 19.5rem));
   }
 }
 
