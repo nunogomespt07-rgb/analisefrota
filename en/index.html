@@ -83,7 +83,6 @@
             <span class="lang-sep" aria-hidden="true">|</span>
             <a href="/en/" class="lang-btn is-active" hreflang="en-GB" lang="en-GB" aria-current="page">EN</a>
           </div>
-          <a href="/en/#simulador" class="btn btn-nav">Free assessment</a>
         </div>
       </div>
     </header>
@@ -109,7 +108,7 @@
             </p>
 
             <div class="hero-actions">
-              <a href="/en/#simulador" class="btn btn-primary">Start free assessment</a>
+              <a href="/en/#simulador" class="btn btn-primary">Calculate savings</a>
             </div>
             <ul class="hero-positioning" aria-label="Simulation advantages">
               <li>No commitment</li>
@@ -303,20 +302,16 @@
                         <input id="purchaseInitialPayment" name="purchaseInitialPayment" type="number" min="0" value="" placeholder="—" data-placeholder-pt="—" data-placeholder-en="—" />
                       </div>
 
-                      <div class="field field-span-2 simulator-toggle-field">
-                        <label class="simulator-toggle">
-                          <input
-                            type="checkbox"
-                            class="simulator-toggle-input"
-                            id="useInternalOpexEstimate"
-                            name="useInternalOpexEstimate"
-                            checked
-                          />
-                          <span class="simulator-toggle-track" aria-hidden="true">
-                            <span class="simulator-toggle-thumb"></span>
-                          </span>
-                          <span class="simulator-toggle-label">Use internal estimates for maintenance, tyres, and taxes</span>
-                        </label>
+                      <div class="field field-span-2">
+                        <div class="form-toggle">
+                          <label class="toggle">
+                            <input type="checkbox" id="useInternalOpexEstimate" name="useInternalOpexEstimate" checked />
+                            <span class="slider"></span>
+                          </label>
+                          <label class="toggle-label" for="useInternalOpexEstimate">
+                            Use internal estimates for maintenance, tyres, and taxes
+                          </label>
+                        </div>
                       </div>
 
                       <details class="simulator-advanced purchase-manual-opex field-span-2 is-hidden">
@@ -409,7 +404,7 @@
                 </div>
 
                 <div class="simulator-footer">
-                  <button type="submit" class="btn btn-primary btn-large btn-sim-submit">View estimate</button>
+                  <button type="submit" class="btn btn-primary btn-large btn-sim-submit">Calculate TCO</button>
                   <small id="simulatorFeedback">Indicative single-vehicle simulation based on average market assumptions.</small>
                 </div>
               </form>
